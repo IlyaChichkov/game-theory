@@ -9,6 +9,7 @@
 class Team
 {
 protected:
+    int id;
     int production;
     std::vector<std::shared_ptr<ITurnAction>> turn_actions;
 

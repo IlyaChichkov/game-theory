@@ -40,7 +40,7 @@ private:
         DefaultMatchActions matchActions;
 
         for (int i = 0; i < 4; ++i) {
-            MyTeam* team = new MyTeam();
+            MyTeam* team = new MyTeam(i);
             team->set_prod(initial_production);
             team->set_turn_actions(matchActions.Create());
             teams.push_back(team);

@@ -7,6 +7,10 @@
 
 class MyTeam : public Team {
 public:
+    MyTeam(int _id) {
+        id = _id;
+    }
+
     void set_prod(int val) {
         production = val;
     }
