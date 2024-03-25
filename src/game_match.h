@@ -19,8 +19,13 @@ public:
         std::vector<std::shared_ptr<ITurnAction>> actions;
         actions.push_back(std::make_shared<ProductionChange>(-10));
         actions.push_back(std::make_shared<ProductionChange>(-10));
+        actions.push_back(std::make_shared<ProductionChange>(-20));
+        actions.push_back(std::make_shared<ProductionChange>(-20));
         actions.push_back(std::make_shared<ProductionChange>(10));
         actions.push_back(std::make_shared<ProductionChange>(10));
+        actions.push_back(std::make_shared<ProductionChange>(30));
+        actions.push_back(std::make_shared<ProductionChange>(30));
+        actions.push_back(std::make_shared<ProductionChange>(0));
         actions.push_back(std::make_shared<ProvokeStrike>());
         return actions;
     }

@@ -16,7 +16,17 @@ public:
     }
 
     ITurnAction make_turn(TurnData match) override {
-        std::cout << "Making turn..." << std::endl;
+        std::cout << "[" << id << "] Making turn:" << std::endl;
+
+        auto inc = get_increase_production_actions();
+        std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
+        auto dec = get_decrease_production_actions();
+        std::cout << "get_decrease_production_actions:" << dec.size() << std::endl;
+        auto un = get_unchanged_production_actions();
+        std::cout << "get_unchanged_production_actions:" << un.size() << std::endl;
+
+        auto str = get_strike_actions();
+        std::cout << "get_strike_actions:" << str.size() << std::endl;
 
         ITurnAction& action = *turn_actions.at(0);
 
@@ -26,15 +36,15 @@ public:
 
         if(action.actionType == TurnActionType::None)
         {
-            std::cout << "Error: " << std::endl;
+            std::cout << "None" << std::endl;
         }
         if(action.actionType == TurnActionType::ProductionChange)
         {
-            std::cout << "ProductionChange: " << std::endl;
+            std::cout << "ProductionChange" << std::endl;
         }
         if(action.actionType == TurnActionType::Strike)
         {
-            std::cout << "Strike: " << std::endl;
+            std::cout << "Strike" << std::endl;
         }
 
         return action;
