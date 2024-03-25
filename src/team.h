@@ -10,14 +10,15 @@ class Team
 {
 protected:
     int production;
-    std::vector<ITurnAction*> turn_actions;
+    std::vector<std::shared_ptr<ITurnAction>> turn_actions;
+
 public:
-    void set_turn_actions(std::vector<ITurnAction*> val)
+    void set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val)
     {
         turn_actions = val;
     }
 
-    [[nodiscard]] virtual ITurnAction make_turn(TurnData match) const = 0;
+    virtual ITurnAction make_turn(TurnData match) = 0;
 
     virtual ~Team() {}
 };

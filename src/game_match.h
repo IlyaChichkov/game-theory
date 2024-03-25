@@ -9,19 +9,19 @@
 
 class MatchActionsFactory {
 public:
-    virtual std::vector<ITurnAction*> Create() const = 0;
+    virtual std::vector<std::shared_ptr<ITurnAction>> Create() const = 0;
     virtual ~MatchActionsFactory() {} // Virtual destructor for polymorphism
 };
 
 class DefaultMatchActions : public MatchActionsFactory {
 public:
-    [[nodiscard]] std::vector<ITurnAction*> Create() const override {
-        std::vector<ITurnAction*> actions;
-        actions.push_back(new ProductionChange(-10));
-        actions.push_back(new ProductionChange(-10));
-        actions.push_back(new ProductionChange(10));
-        actions.push_back(new ProductionChange(10));
-        actions.push_back(new ProvokeStrike());
+    [[nodiscard]] std::vector<std::shared_ptr<ITurnAction>> Create() const override {
+        std::vector<std::shared_ptr<ITurnAction>> actions;
+        actions.push_back(std::make_shared<ProductionChange>(-10));
+        actions.push_back(std::make_shared<ProductionChange>(-10));
+        actions.push_back(std::make_shared<ProductionChange>(10));
+        actions.push_back(std::make_shared<ProductionChange>(10));
+        actions.push_back(std::make_shared<ProvokeStrike>());
         return actions;
     }
 };
@@ -36,10 +36,12 @@ private:
     std::vector<Team*> strikeTeams;
 
     void setup_teams() {
+        int initial_production = 250;
         DefaultMatchActions matchActions;
 
         for (int i = 0; i < 4; ++i) {
             MyTeam* team = new MyTeam();
+            team->set_prod(initial_production);
             team->set_turn_actions(matchActions.Create());
             teams.push_back(team);
         }
