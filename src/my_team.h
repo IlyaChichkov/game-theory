@@ -6,14 +6,6 @@
 #include "team.h"
 
 class MyTeam : public Team {
-private:
-    void turn()
-    {
-
-        if (!this->turn_actions.empty()) {
-            turn_actions.erase(turn_actions.begin());
-        }
-    }
 public:
     void set_prod(int val) {
         production = val;
