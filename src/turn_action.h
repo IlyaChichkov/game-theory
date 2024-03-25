@@ -25,9 +25,9 @@ public:
 };
 
 class ProductionChange : public ITurnAction {
-private:
-    int delta = 0;
 public:
+    int delta = 0;
+
     explicit ProductionChange(int _delta) {
         actionType = TurnActionType::ProductionChange;
         delta = _delta;
@@ -35,9 +35,9 @@ public:
 };
 
 class ProvokeStrike : public ITurnAction {
-private:
-    Team *strikeTarget = nullptr;
 public:
+    Team *strikeTarget = nullptr;
+
     explicit ProvokeStrike() {
         actionType = TurnActionType::Strike;
         strikeTarget = nullptr;
