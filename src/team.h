@@ -1,31 +1,25 @@
-#ifndef TEAM_H
-#define TEAM_H
+#ifndef GAME_THEORY_TEAM_H
+#define GAME_THEORY_TEAM_H
 
 #include <iostream>
 #include <vector>
-
-#define STRIKE  0
-#define SKIP    1
-#define UP_10   2
-#define UP_20   3
-#define UP_30   4
-#define UP_40   5
-#define UP_50   6
-#define DOWN_10 7
-#define DOWN_20 8
-#define DOWN_30 9
+#include "turn_data.h"
+#include "turn_action.h"
 
 class Team
 {
-private:
+protected:
     int production;
-    std::vector<int> options;
-    void del_opt(int val);
+    std::vector<ITurnAction*> turn_actions;
 public:
-    Team();
-    void set_prod(int val);
-    int get_prod();
-    void use_option(int opt, Team* target=NULL);
+    void set_turn_actions(std::vector<ITurnAction*> val)
+    {
+        turn_actions = val;
+    }
+
+    [[nodiscard]] virtual ITurnAction make_turn(TurnData match) const = 0;
+
+    virtual ~Team() {}
 };
 
-#endif // TEAM_H
+#endif //GAME_THEORY_TEAM_H
