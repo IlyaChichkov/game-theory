@@ -3,4 +3,4 @@ project(game_theory)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(game_theory main.cpp)
+add_executable(game_theory main.cpp src/team.cpp)
