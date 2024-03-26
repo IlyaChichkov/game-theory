@@ -5,6 +5,11 @@ Team::Team(int _id) {
     id = _id;
 }
 
+Team::Team(int _id, std::string _name) {
+    id = _id;
+    name = _name;
+}
+
 void Team::set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val)
 {
     turn_actions = val;
