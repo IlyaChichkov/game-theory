@@ -96,7 +96,7 @@ void GameMatch::start() {
 void GameMatch::print_turn_results() {
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << std::endl;
+        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " +" << team->funds_delta_per_turn << std::endl;
     }
     std::cout << "|------------------------------------|" << std::endl;
 }
