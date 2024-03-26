@@ -1,13 +1,5 @@
 #include "my_team.h"
 
-MyTeam::MyTeam(int _id) {
-    id = _id;
-}
-
-void MyTeam::set_prod(int val) {
-    production = val;
-}
-
 std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
     // auto inc = get_increase_production_actions();
     // std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
@@ -37,5 +29,9 @@ std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
 }
 
 MyTeam::~MyTeam() {
+
+}
+
+MyTeam::MyTeam(int _id) : Team(_id) {
 
 }

@@ -7,7 +7,6 @@
 class BullTeam : public Team {
 public:
     explicit BullTeam(int _id);
-    void set_prod(int val);
     std::shared_ptr<ITurnAction> make_turn(TurnData match);
     ~BullTeam();
 };

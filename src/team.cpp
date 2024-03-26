@@ -1,6 +1,10 @@
 #include "team.h"
 
 
+Team::Team(int _id) {
+    id = _id;
+}
+
 void Team::set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val)
 {
     turn_actions = val;
