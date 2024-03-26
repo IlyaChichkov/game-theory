@@ -11,15 +11,14 @@ void MyTeam::set_prod(int val) {
 std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
     std::cout << "[" << id << "] Making turn:" << std::endl;
 
-    auto inc = get_increase_production_actions();
-    std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
-    auto dec = get_decrease_production_actions();
-    std::cout << "get_decrease_production_actions:" << dec.size() << std::endl;
-    auto un = get_unchanged_production_actions();
-    std::cout << "get_unchanged_production_actions:" << un.size() << std::endl;
-
-    auto str = get_strike_actions();
-    std::cout << "get_strike_actions:" << str.size() << std::endl;
+    // auto inc = get_increase_production_actions();
+    // std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
+    // auto dec = get_decrease_production_actions();
+    // std::cout << "get_decrease_production_actions:" << dec.size() << std::endl;
+    // auto un = get_unchanged_production_actions();
+    // std::cout << "get_unchanged_production_actions:" << un.size() << std::endl;
+    // auto str = get_strike_actions();
+    // std::cout << "get_strike_actions:" << str.size() << std::endl;
 
     std::shared_ptr<ITurnAction> action = turn_actions.at(0);
 
