@@ -6,16 +6,16 @@ ProductionChange::ProductionChange(int _delta) {
     delta = _delta;
 }
 
-void ProductionChange::SetOwner(int _owner_id) {
+void ProductionChange::set_owner(int _owner_id) {
     owner_id = _owner_id;
 }
 
-int ProductionChange::GetDelta()  {
+int ProductionChange::get_delta()  {
     return delta;
 }
 
-void ProductionChange::Complete(TurnData *turnData) const {
-    std::cout << "Complete: Production Change | Delta = " << delta << std::endl;
+void ProductionChange::complete(TurnData *turnData) const {
+    std::cout << "complete: Production Change | Delta = " << delta << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == owner_id) {
             team_ptr->set_next_production(team_ptr->get_next_production() + delta);
@@ -29,8 +29,8 @@ ProvokeStrike::ProvokeStrike() {
     strikeTarget = nullptr;
 }
 
-void ProvokeStrike::Complete(TurnData *turnData) const {
-    std::cout << "Complete: Provoke Strike | Target is team_" << strikeTarget->ID() << std::endl;
+void ProvokeStrike::complete(TurnData *turnData) const {
+    std::cout << "complete: Provoke Strike | Target is team_" << strikeTarget->ID() << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == strikeTarget->ID()) {
             team_ptr->apply_strike();
@@ -39,6 +39,6 @@ void ProvokeStrike::Complete(TurnData *turnData) const {
     }
 }
 
-void ProvokeStrike::SetTarget(std::shared_ptr<Team> target) {
+void ProvokeStrike::set_target(std::shared_ptr<Team> target) {
     strikeTarget = target;
 }

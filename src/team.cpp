@@ -74,7 +74,7 @@ std::vector<std::shared_ptr<ITurnAction>> Team::get_increase_production_actions(
     std::vector<std::shared_ptr<ITurnAction>> list;
     for (const auto &a : turn_actions) {
         std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a);
-        if(action && action->GetDelta() > 0) {
+        if(action && action->get_delta() > 0) {
             list.push_back(action);
         }
     }
@@ -85,7 +85,7 @@ std::vector<std::shared_ptr<ITurnAction>> Team::get_decrease_production_actions(
     std::vector<std::shared_ptr<ITurnAction>> list;
     for (const auto &a : turn_actions) {
         std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a);
-        if(action && action->GetDelta() < 0) {
+        if(action && action->get_delta() < 0) {
             list.push_back(action);
         }
     }
@@ -96,7 +96,7 @@ std::vector<std::shared_ptr<ITurnAction>> Team::get_unchanged_production_actions
     std::vector<std::shared_ptr<ITurnAction>> list;
     for (const auto &a : turn_actions) {
         std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a);
-        if(action && action->GetDelta() == 0) {
+        if(action && action->get_delta() == 0) {
             list.push_back(action);
         }
     }
