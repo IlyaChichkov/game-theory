@@ -7,6 +7,7 @@
 class MyTeam : public Team {
 public:
     explicit MyTeam(int _id);
+    explicit MyTeam(int _id, std::string _name);
     int get_rand(int from, int to);
     std::shared_ptr<ITurnAction> make_turn(TurnData match);
     ~MyTeam();

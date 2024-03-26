@@ -2,6 +2,7 @@
 #define GAME_THEORY_TEAM_H
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include "turn_action.h"
 #include "turn_data.h"
@@ -18,9 +19,11 @@ protected:
     int production;
 
 public:
+    std::string name = "Name";
     std::vector<std::shared_ptr<ITurnAction>> turn_actions;
 
     Team(int _id);
+    Team(int _id, std::string _name);
     void set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val);
     int get_production();
     void set_production(int val);

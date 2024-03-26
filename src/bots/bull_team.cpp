@@ -41,10 +41,14 @@ std::shared_ptr<ITurnAction> BullTeam::make_turn(TurnData data) {
     return action;
 }
 
-BullTeam::~BullTeam() {
+BullTeam::BullTeam(int _id) : Team(_id) {
 
 }
 
-BullTeam::BullTeam(int _id) : Team(_id) {
+BullTeam::BullTeam(int _id, std::string _name) : Team(_id, _name) {
+
+}
+
+BullTeam::~BullTeam() {
 
 }

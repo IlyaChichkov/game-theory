@@ -28,10 +28,10 @@ void GameMatch::setup_teams() {
     int initial_production = 250;
     DefaultMatchActions matchActions;
 
-    teams.push_back(std::make_shared<BullTeam>(0));
-    teams.push_back(std::make_shared<BullTeam>(1));
-    teams.push_back(std::make_shared<BullTeam>(2));
-    teams.push_back(std::make_shared<MyTeam>(3));
+    teams.push_back(std::make_shared<BullTeam>(0, "Bull A"));
+    teams.push_back(std::make_shared<BullTeam>(1, "Bull B"));
+    teams.push_back(std::make_shared<BullTeam>(2, "Bull C"));
+    teams.push_back(std::make_shared<MyTeam>(3, "Randy "));
 
     for (int i = 0; i < 4; ++i) {
         auto team = teams.at(i);
@@ -81,7 +81,7 @@ void GameMatch::start() {
 void GameMatch::print_turn_results() {
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| Team_" << team->ID() << "; Production: " << team->get_production() << std::endl;
+        std::cout << "| [" << team->ID() << "] " << team->name << "; Production: " << team->get_production() << std::endl;
     }
     std::cout << "|------------------------------------|" << std::endl;
 }
@@ -98,7 +98,7 @@ void GameMatch::print_match_results() {
     std::cout << "| Production Winners:" << std::endl;
     for(const auto& team : this->teams) {
         if(team->get_production() == max_production) {
-            std::cout << "| Team_" << team->ID() << std::endl;
+            std::cout << "| [" << team->ID() << "] " << team->name << std::endl;
         }
     }
 
