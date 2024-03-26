@@ -61,11 +61,20 @@ void GameMatch::complete_turn() {
         actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
     }
 
+    for(const auto& team : this->teams) {
+        team->after_turn();
+        team->add_funds(get_income(team->get_production()));
+    }
+
     compute_turn_results();
 }
 
 void GameMatch::compute_turn_results() {
 
+}
+
+int GameMatch::get_income(int production) {
+    return (int)(production * 2.6);
 }
 
 void GameMatch::start() {
