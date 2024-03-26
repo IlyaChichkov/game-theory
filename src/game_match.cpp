@@ -1,6 +1,7 @@
 #include "game_match.h"
 #include "team.h"
 #include "my_team.h"
+#include "bots/bull_team.h"
 #include "turn_action.h"
 
 
@@ -27,9 +28,14 @@ void GameMatch::setup_teams() {
     int initial_production = 250;
     DefaultMatchActions matchActions;
 
+    teams.push_back(std::make_shared<BullTeam>(0));
+    teams.push_back(std::make_shared<BullTeam>(1));
+    teams.push_back(std::make_shared<BullTeam>(2));
+    teams.push_back(std::make_shared<MyTeam>(3));
+
     for (int i = 0; i < 4; ++i) {
-        int team_id = i;
-        auto team = std::make_shared<MyTeam>(team_id);
+        auto team = teams.at(i);
+        int team_id = team->ID();
         team->set_production(initial_production);
         auto actions = matchActions.Create();
         for (const auto action: actions) {
@@ -39,7 +45,6 @@ void GameMatch::setup_teams() {
             }
         }
         team->set_turn_actions(actions);
-        teams.push_back(team);
     }
 }
 
@@ -48,8 +53,12 @@ void GameMatch::complete_turn() {
     turnData.teams = teams;
 
     for(const auto& team : this->teams) {
+        std::cout << "Team_" << team->ID() << std::endl;
         auto selectedAction = team->make_turn(turnData);
         selectedAction->Complete(&turnData);
+
+        auto& actions = team->turn_actions;
+        actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
     }
 
     compute_turn_results();
