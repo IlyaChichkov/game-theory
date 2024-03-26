@@ -1,4 +1,5 @@
 #include "turn_action.h"
+#include "team.h"
 
 ProductionChange::ProductionChange(int _delta) {
     actionType = TurnActionType::ProductionChange;
@@ -15,6 +16,11 @@ int ProductionChange::GetDelta()  {
 
 void ProductionChange::Complete(TurnData *turnData) const {
     std::cout << "Complete ProductionChange" << std::endl;
+    for (auto team_ptr : turnData->teams) {
+        if(team_ptr->ID() == owner_id) {
+            team_ptr->set_production(team_ptr->get_production() + delta);
+        }
+    }
 }
 
 ProvokeStrike::ProvokeStrike() {
@@ -23,12 +29,14 @@ ProvokeStrike::ProvokeStrike() {
 }
 
 void ProvokeStrike::Complete(TurnData *turnData) const {
-    //for (auto team_ptr : turnData->teams) {
-        // team_ptr->ID();
-    //}
+    for (auto team_ptr : turnData->teams) {
+        if(team_ptr->ID() == strikeTarget->ID()) {
+            team_ptr->set_production((int)(team_ptr->get_production() / 2));
+        }
+    }
     std::cout << "Complete ProvokeStrike" << std::endl;
 }
 
-void ProvokeStrike::SetTarget(Team *target) {
+void ProvokeStrike::SetTarget(std::shared_ptr<Team> target) {
     strikeTarget = target;
 }
