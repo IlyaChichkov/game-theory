@@ -5,7 +5,17 @@ std::shared_ptr<ITurnAction> BullTeam::make_turn(TurnData data) {
     auto increaseActions = get_increase_production_actions();
     if(!increaseActions.empty())
     {
-        std::shared_ptr<ITurnAction> action = increaseActions.at(0);
+        int max_increase = 0;
+        int action_index = 0;
+        for (int i = 0; i < increaseActions.size(); ++i) {
+            const auto &a = increaseActions.at(i);
+            std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(a);
+            if(pc->GetDelta() > max_increase) {
+                max_increase = pc->GetDelta();
+                action_index = i;
+            }
+        }
+        std::shared_ptr<ITurnAction> action = increaseActions.at(action_index);
 
         return action;
     }
