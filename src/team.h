@@ -13,9 +13,10 @@ class Team
 protected:
     int id;
     int production;
-    std::vector<std::shared_ptr<ITurnAction>> turn_actions;
 
 public:
+    std::vector<std::shared_ptr<ITurnAction>> turn_actions;
+
     void set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val);
     int get_production();
     void set_production(int val);

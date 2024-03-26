@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "turn_action.h"
 
 class ITurnAction;
