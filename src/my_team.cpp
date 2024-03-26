@@ -25,7 +25,7 @@ std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
         case TurnActionType::Strike:
             std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(action);
             auto opponents = data.get_opponents(id);
-            strike->SetTarget(opponents.at(get_rand(0, opponents.size())));
+            strike->set_target(opponents.at(get_rand(0, opponents.size())));
             break;
     }
 

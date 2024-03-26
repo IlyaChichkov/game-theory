@@ -18,7 +18,7 @@ class ITurnAction {
      */
 public:
     TurnActionType actionType = TurnActionType::None;
-    virtual void Complete(TurnData *turnData) const = 0;
+    virtual void complete(TurnData *turnData) const = 0;
     virtual ~ITurnAction() {}
 };
 
@@ -28,9 +28,9 @@ private:
     int delta = 0;
 public:
     explicit ProductionChange(int _delta);
-    void SetOwner(int _owner_id);
-    int GetDelta();
-    void Complete(TurnData *turnData) const override;
+    void set_owner(int _owner_id);
+    int get_delta();
+    void complete(TurnData *turnData) const override;
 };
 
 class ProvokeStrike : public ITurnAction {
@@ -38,8 +38,8 @@ private:
     std::shared_ptr<Team> strikeTarget = nullptr;
 public:
     explicit ProvokeStrike();
-    void Complete(TurnData *turnData) const override;
-    void SetTarget(std::shared_ptr<Team> target);
+    void complete(TurnData *turnData) const override;
+    void set_target(std::shared_ptr<Team> target);
 };
 
 #endif //GAME_THEORY_TURN_ACTION_H

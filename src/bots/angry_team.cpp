@@ -20,7 +20,7 @@ std::shared_ptr<ITurnAction> AngryTeam::make_turn(TurnData data) {
             }
         }
 
-        strike->SetTarget(opponents.at(strike_id));
+        strike->set_target(opponents.at(strike_id));
         return action;
     }
 
@@ -33,8 +33,8 @@ std::shared_ptr<ITurnAction> AngryTeam::make_turn(TurnData data) {
         for (int i = 0; i < increaseActions.size(); ++i) {
             const auto &a = increaseActions.at(i);
             std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(a);
-            if(pc->GetDelta() > max_increase) {
-                max_increase = pc->GetDelta();
+            if(pc->get_delta() > max_increase) {
+                max_increase = pc->get_delta();
                 action_index = i;
             }
         }

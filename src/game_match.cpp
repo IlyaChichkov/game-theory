@@ -42,7 +42,7 @@ void GameMatch::setup_teams() {
         for (const auto action: actions) {
             if(action->actionType == TurnActionType::ProductionChange) {
                 std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(action);
-                pc->SetOwner(team_id);
+                pc->set_owner(team_id);
             }
         }
         team->set_turn_actions(actions);
@@ -61,7 +61,7 @@ void GameMatch::complete_turn() {
     for(const auto& team : this->teams) {
         std::cout << "Team_" << team->ID() << std::endl;
         auto selectedAction = team->make_turn(turnData);
-        selectedAction->Complete(&turnData);
+        selectedAction->complete(&turnData);
 
         auto& actions = team->turn_actions;
         actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
