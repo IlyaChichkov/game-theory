@@ -33,6 +33,9 @@ private:
     std::map<int, int> productsPriceTable;
     std::map<int, int> productionCostsTable;
 
+    int total_production = 0;
+    int sell_price = 0;
+
     void setup_teams();
     void complete_turn();
     int get_income(int production);

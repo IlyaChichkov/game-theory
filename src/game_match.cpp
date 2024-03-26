@@ -69,18 +69,27 @@ void GameMatch::complete_turn() {
 
     for(const auto& team : this->teams) {
         team->after_turn();
-        team->add_funds(get_income(team->get_production()));
     }
 
     compute_turn_results();
+
+    for(const auto& team : this->teams) {
+        team->pay_production_cost();
+        team->add_funds(get_income(team->get_production()));
+    }
 }
 
 void GameMatch::compute_turn_results() {
-
+    total_production = 0;
+    for(const auto& team : this->teams) {
+        total_production += team->get_production();
+    }
+    int max_production = 1000;
+    sell_price = (int)(70 * max_production / total_production);
 }
 
 int GameMatch::get_income(int production) {
-    return (int)(production * 2.6);
+    return (int)(production * sell_price);
 }
 
 void GameMatch::start() {
@@ -96,7 +105,7 @@ void GameMatch::start() {
 void GameMatch::print_turn_results() {
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " +" << team->funds_delta_per_turn << std::endl;
+        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
     }
     std::cout << "|------------------------------------|" << std::endl;
 }

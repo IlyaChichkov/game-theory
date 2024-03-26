@@ -37,6 +37,7 @@ public:
     void set_next_production(int val);
 
     int get_funds();
+    void pay_production_cost();
     void add_funds(int val);
     void apply_strike();
 
