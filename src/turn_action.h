@@ -5,8 +5,6 @@
 #include "game_match.h"
 #include "turn_data.h"
 
-class Team;
-
 enum class TurnActionType {
     None,
     ProductionChange,
