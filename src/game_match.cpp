@@ -53,6 +53,11 @@ void GameMatch::complete_turn() {
     turnData.teams = teams;
 
     for(const auto& team : this->teams) {
+        team->before_turn();
+    }
+
+    // Выполнение хода каждой команды
+    for(const auto& team : this->teams) {
         std::cout << "Team_" << team->ID() << std::endl;
         auto selectedAction = team->make_turn(turnData);
         selectedAction->Complete(&turnData);
@@ -90,7 +95,7 @@ void GameMatch::start() {
 void GameMatch::print_turn_results() {
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| [" << team->ID() << "] " << team->name << "; Production: " << team->get_production() << std::endl;
+        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << std::endl;
     }
     std::cout << "|------------------------------------|" << std::endl;
 }
@@ -112,7 +117,21 @@ void GameMatch::print_match_results() {
     }
 
     int max_funds = 0;
-    // TODO: Funds winners compute...
+    for(const auto& team : this->teams) {
+        if(team->get_funds() > max_funds) {
+            max_funds = team->get_funds();
+        }
+    }
+
+    std::cout << "| Funds:" << std::endl;
+    for(const auto& team : this->teams) {
+        if(team->get_funds() == max_funds) {
+            std::cout << "| [" << team->ID() << "] " << team->name << " - funds = " << team->get_funds() << " winner!" << std::endl;
+        }
+        else {
+            std::cout << "| [" << team->ID() << "] " << team->name << " - funds = " << team->get_funds() << std::endl;
+        }
+    }
 
     std::cout << "|------------------------------------|" << std::endl;
 }
