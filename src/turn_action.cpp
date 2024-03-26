@@ -18,7 +18,7 @@ void ProductionChange::Complete(TurnData *turnData) const {
     std::cout << "Complete: Production Change | Delta = " << delta << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == owner_id) {
-            team_ptr->set_production(team_ptr->get_production() + delta);
+            team_ptr->set_next_production(team_ptr->get_next_production() + delta);
             break;
         }
     }
@@ -33,11 +33,7 @@ void ProvokeStrike::Complete(TurnData *turnData) const {
     std::cout << "Complete: Provoke Strike | Target is team_" << strikeTarget->ID() << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == strikeTarget->ID()) {
-            int p = team_ptr->get_production() / 2;
-            if(p < 100) {
-                p = 100;
-            }
-            team_ptr->set_production(p);
+            team_ptr->apply_strike();
             break;
         }
     }
