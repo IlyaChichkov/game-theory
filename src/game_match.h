@@ -3,9 +3,10 @@
 
 #include <vector>
 #include <memory>
-#include "team.h"
-#include "my_team.h"
 #include "turn_action.h"
+
+class ITurnAction;
+class Team;
 
 class MatchActionsFactory {
 public:
@@ -15,20 +16,7 @@ public:
 
 class DefaultMatchActions : public MatchActionsFactory {
 public:
-    [[nodiscard]] std::vector<std::shared_ptr<ITurnAction>> Create() const override {
-        std::vector<std::shared_ptr<ITurnAction>> actions;
-        actions.push_back(std::make_shared<ProductionChange>(-10));
-        actions.push_back(std::make_shared<ProductionChange>(-10));
-        actions.push_back(std::make_shared<ProductionChange>(-20));
-        actions.push_back(std::make_shared<ProductionChange>(-20));
-        actions.push_back(std::make_shared<ProductionChange>(10));
-        actions.push_back(std::make_shared<ProductionChange>(10));
-        actions.push_back(std::make_shared<ProductionChange>(30));
-        actions.push_back(std::make_shared<ProductionChange>(30));
-        actions.push_back(std::make_shared<ProductionChange>(0));
-        actions.push_back(std::make_shared<ProvokeStrike>());
-        return actions;
-    }
+    [[nodiscard]] std::vector<std::shared_ptr<ITurnAction>> Create() const override;
 };
 
 class GameMatch {
@@ -40,55 +28,14 @@ private:
     std::vector<Team*> teams;
     std::vector<Team*> strikeTeams;
 
-    void setup_teams() {
-        int initial_production = 250;
-        DefaultMatchActions matchActions;
-
-        for (int i = 0; i < 4; ++i) {
-            MyTeam* team = new MyTeam(i);
-            team->set_prod(initial_production);
-            team->set_turn_actions(matchActions.Create());
-            teams.push_back(team);
-        }
-    }
-
-    void complete_turn() {
-        TurnData turnData;
-
-        for(const auto& team : this->teams)
-        {
-            ITurnAction selectedAction = team->make_turn(turnData);
-        }
-
-        compute_turn_results();
-    }
-
-    void compute_turn_results() {
-
-    }
+    void setup_teams();
+    void complete_turn();
+    void compute_turn_results();
 
 public:
-
-    void start() {
-        setup_teams();
-        for (int i = 0; i < 5; ++i) {
-            complete_turn();
-        }
-    }
-
-    void add_strike(Team *strikeTeam) {
-        this->strikeTeams.push_back(strikeTeam);
-    }
-
-    ~GameMatch() {
-        for (auto* team : teams) {
-            delete team;
-        }
-
-        for (auto* team : strikeTeams) {
-            delete team;
-        }
-    }
+    void start();
+    void add_strike(Team *strikeTeam);
+    ~GameMatch();
 };
 
 
