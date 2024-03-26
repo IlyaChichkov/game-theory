@@ -22,6 +22,7 @@ protected:
     bool has_strike = false;
 
 public:
+    int funds_delta_per_turn = 0;
     std::string name = "Name";
     std::vector<std::shared_ptr<ITurnAction>> turn_actions;
 
