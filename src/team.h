@@ -16,7 +16,10 @@ class Team
      */
 protected:
     int id;
-    int production;
+    int production = 0;
+    int next_production = 0;
+    int funds = 0;
+    bool has_strike = false;
 
 public:
     std::string name = "Name";
@@ -25,8 +28,19 @@ public:
     Team(int _id);
     Team(int _id, std::string _name);
     void set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val);
+
     int get_production();
     void set_production(int val);
+
+    int get_next_production();
+    void set_next_production(int val);
+
+    int get_funds();
+    void add_funds(int val);
+    void apply_strike();
+
+    void before_turn();
+    void after_turn();
 
     std::vector<std::shared_ptr<ITurnAction>> get_increase_production_actions();
     std::vector<std::shared_ptr<ITurnAction>> get_decrease_production_actions();
