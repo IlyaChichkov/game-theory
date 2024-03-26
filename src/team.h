@@ -10,6 +10,9 @@ class ITurnAction;
 
 class Team
 {
+    /*
+     *  Абстрактный класс для команды, выполняющей ходы
+     */
 protected:
     int id;
     int production;
