@@ -37,11 +37,11 @@ public:
 
 class ProvokeStrike : public ITurnAction {
 private:
-    Team *strikeTarget = nullptr;
+    std::shared_ptr<Team> strikeTarget = nullptr;
 public:
     explicit ProvokeStrike();
     void Complete(TurnData *turnData) const override;
-    void SetTarget(Team *target) ;
+    void SetTarget(std::shared_ptr<Team> target);
 };
 
 #endif //GAME_THEORY_TURN_ACTION_H

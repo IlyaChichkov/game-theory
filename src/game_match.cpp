@@ -28,9 +28,18 @@ void GameMatch::setup_teams() {
     DefaultMatchActions matchActions;
 
     for (int i = 0; i < 4; ++i) {
-        MyTeam* team = new MyTeam(i);
-        team->set_prod(initial_production);
-        team->set_turn_actions(matchActions.Create());
+        int team_id = i;
+        auto team = std::make_shared<MyTeam>(team_id);
+        team->set_production(initial_production);
+        auto actions = matchActions.Create();
+        for (const auto action: actions) {
+            if(action->actionType == TurnActionType::ProductionChange)
+            {
+                std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(action);
+                pc->SetOwner(team_id);
+            }
+        }
+        team->set_turn_actions(actions);
         teams.push_back(team);
     }
 }
@@ -59,16 +68,6 @@ void GameMatch::start() {
     }
 }
 
-void GameMatch::add_strike(Team *strikeTeam) {
-    this->strikeTeams.push_back(strikeTeam);
-}
-
 GameMatch::~GameMatch() {
-    for (auto* team : teams) {
-        delete team;
-    }
 
-    for (auto* team : strikeTeams) {
-        delete team;
-    }
 }

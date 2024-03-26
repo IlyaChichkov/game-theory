@@ -7,12 +7,19 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 class Team;
 
 class TurnData {
+    /*
+     *  Содержит всю информацию об игре, командах на
+     *  текущем ходе игры
+     */
 public:
-    std::vector<Team*> teams;
+    std::vector<std::shared_ptr<Team>> teams;
+
+    std::vector<std::shared_ptr<Team>> get_opponents(int team_id);
 };
 
 

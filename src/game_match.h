@@ -11,7 +11,7 @@ class Team;
 class MatchActionsFactory {
 public:
     virtual std::vector<std::shared_ptr<ITurnAction>> Create() const = 0;
-    virtual ~MatchActionsFactory() {} // Virtual destructor for polymorphism
+    virtual ~MatchActionsFactory() {}
 };
 
 class DefaultMatchActions : public MatchActionsFactory {
@@ -22,11 +22,12 @@ public:
 class GameMatch {
     /*
      *  Игровой матч состоящий из 14 ходов
-     *  Содержит всю информацию о текущей игре, командах
+     *  Содержит информацию о игре, командах, и т.д.
+     *  Управляет циклом игры, производит ходы
      */
 private:
-    std::vector<Team*> teams;
-    std::vector<Team*> strikeTeams;
+    std::vector<std::shared_ptr<Team>> teams;
+    std::vector<std::shared_ptr<Team>> strikeTeams;
 
     void setup_teams();
     void complete_turn();
@@ -34,7 +35,7 @@ private:
 
 public:
     void start();
-    void add_strike(Team *strikeTeam);
+
     ~GameMatch();
 };
 
