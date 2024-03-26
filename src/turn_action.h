@@ -3,9 +3,8 @@
 
 #include <utility>
 #include "game_match.h"
-#include "team.h"
+#include "turn_data.h"
 
-class GameMatch;
 class Team;
 
 enum class TurnActionType {
@@ -21,31 +20,28 @@ class ITurnAction {
      */
 public:
     TurnActionType actionType = TurnActionType::None;
+    virtual void Complete(TurnData *turnData) const = 0;
     virtual ~ITurnAction() {}
 };
 
 class ProductionChange : public ITurnAction {
-public:
+private:
+    int owner_id;
     int delta = 0;
-
-    explicit ProductionChange(int _delta) {
-        actionType = TurnActionType::ProductionChange;
-        delta = _delta;
-    }
+public:
+    explicit ProductionChange(int _delta);
+    void SetOwner(int _owner_id);
+    int GetDelta();
+    void Complete(TurnData *turnData) const override;
 };
 
 class ProvokeStrike : public ITurnAction {
-public:
+private:
     Team *strikeTarget = nullptr;
-
-    explicit ProvokeStrike() {
-        actionType = TurnActionType::Strike;
-        strikeTarget = nullptr;
-    }
-
-    void SetTarget(Team *target) {
-        strikeTarget = target;
-    }
+public:
+    explicit ProvokeStrike();
+    void Complete(TurnData *turnData) const override;
+    void SetTarget(Team *target) ;
 };
 
 #endif //GAME_THEORY_TURN_ACTION_H
