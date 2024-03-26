@@ -9,8 +9,6 @@ void MyTeam::set_prod(int val) {
 }
 
 std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
-    std::cout << "[TEAM_" << id << "] Making turn:" << std::endl;
-
     // auto inc = get_increase_production_actions();
     // std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
     // auto dec = get_decrease_production_actions();
@@ -21,10 +19,6 @@ std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
     // std::cout << "get_strike_actions:" << str.size() << std::endl;
 
     std::shared_ptr<ITurnAction> action = turn_actions.at(0);
-
-    if (!this->turn_actions.empty()) {
-        turn_actions.erase(turn_actions.begin());
-    }
 
     switch (action->actionType) {
         case TurnActionType::None:
