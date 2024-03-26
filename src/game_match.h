@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 #include <algorithm>
 #include "turn_action.h"
 
@@ -29,6 +30,8 @@ class GameMatch {
 private:
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;
+    std::map<int, int> productsPriceTable;
+    std::map<int, int> productionCostsTable;
 
     void setup_teams();
     void complete_turn();
