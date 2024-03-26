@@ -8,7 +8,7 @@ void MyTeam::set_prod(int val) {
     production = val;
 }
 
-std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData match) {
+std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
     std::cout << "[" << id << "] Making turn:" << std::endl;
 
     auto inc = get_increase_production_actions();
