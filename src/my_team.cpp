@@ -26,17 +26,19 @@ std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
         turn_actions.erase(turn_actions.begin());
     }
 
-    if(action->actionType == TurnActionType::None)
-    {
-        std::cout << "None" << std::endl;
-    }
-    if(action->actionType == TurnActionType::ProductionChange)
-    {
-        std::cout << "ProductionChange" << std::endl;
-    }
-    if(action->actionType == TurnActionType::Strike)
-    {
-        std::cout << "Strike" << std::endl;
+    switch (action->actionType) {
+        case TurnActionType::None:
+            std::cout << "None" << std::endl;
+            break;
+        case TurnActionType::ProductionChange:
+            std::cout << "Production Change" << std::endl;
+            break;
+        case TurnActionType::Strike:
+            std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(action);
+            auto opponents = data.get_opponents(id);
+            strike->SetTarget(opponents.at(0));
+            std::cout << "Strike" << std::endl;
+            break;
     }
 
     return action;
