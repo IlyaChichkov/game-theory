@@ -2,6 +2,7 @@
 #include "team.h"
 #include "my_team.h"
 #include "bots/bull_team.h"
+#include "bots/angry_team.h"
 #include "turn_action.h"
 
 
@@ -30,7 +31,7 @@ void GameMatch::setup_teams() {
 
     teams.push_back(std::make_shared<BullTeam>(0, "Bull A"));
     teams.push_back(std::make_shared<BullTeam>(1, "Bull B"));
-    teams.push_back(std::make_shared<BullTeam>(2, "Bull C"));
+    teams.push_back(std::make_shared<AngryTeam>(2, "Gore C"));
     teams.push_back(std::make_shared<MyTeam>(3, "Randy "));
 
     for (int i = 0; i < 4; ++i) {
