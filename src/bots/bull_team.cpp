@@ -1,13 +1,5 @@
 #include "bull_team.h"
 
-BullTeam::BullTeam(int _id) {
-    id = _id;
-}
-
-void BullTeam::set_prod(int val) {
-    production = val;
-}
-
 std::shared_ptr<ITurnAction> BullTeam::make_turn(TurnData data) {
     // 1) Использовать карты повышения продукции
     auto increaseActions = get_increase_production_actions();
@@ -50,5 +42,9 @@ std::shared_ptr<ITurnAction> BullTeam::make_turn(TurnData data) {
 }
 
 BullTeam::~BullTeam() {
+
+}
+
+BullTeam::BullTeam(int _id) : Team(_id) {
 
 }
