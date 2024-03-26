@@ -64,8 +64,43 @@ void GameMatch::compute_turn_results() {
 void GameMatch::start() {
     setup_teams();
     for (int i = 0; i < 14; ++i) {
+        std::cout << "[TURN " << i << "]" << std::endl;
         complete_turn();
+        print_turn_results();
     }
+    print_match_results();
+}
+
+void GameMatch::print_turn_results() {
+    std::cout << "> TURN RESULTS <" << std::endl;
+    for(const auto& team : this->teams)
+    {
+        std::cout << "> Team_" << team->ID() << "; Production: " << team->get_production() << std::endl;
+    }
+}
+
+void GameMatch::print_match_results() {
+    std::cout << "> MATCH RESULTS <" << std::endl;
+    int max_production = 0;
+    for(const auto& team : this->teams)
+    {
+        if(team->get_production() > max_production)
+        {
+            max_production = team->get_production();
+        }
+    }
+
+    std::cout << "Production Winners:" << std::endl;
+    for(const auto& team : this->teams)
+    {
+        if(team->get_production() == max_production)
+        {
+            std::cout << "> Team_" << team->ID() << std::endl;
+        }
+    }
+
+    int max_funds = 0;
+    // TODO: Funds winners compute...
 }
 
 GameMatch::~GameMatch() {

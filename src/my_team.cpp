@@ -9,7 +9,7 @@ void MyTeam::set_prod(int val) {
 }
 
 std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
-    std::cout << "[" << id << "] Making turn:" << std::endl;
+    std::cout << "[TEAM_" << id << "] Making turn:" << std::endl;
 
     // auto inc = get_increase_production_actions();
     // std::cout << "get_increase_production_actions:" << inc.size() << std::endl;
@@ -28,16 +28,14 @@ std::shared_ptr<ITurnAction> MyTeam::make_turn(TurnData data) {
 
     switch (action->actionType) {
         case TurnActionType::None:
-            std::cout << "None" << std::endl;
+            std::cerr << "Error: Action type set to None!\n";
             break;
         case TurnActionType::ProductionChange:
-            std::cout << "Production Change" << std::endl;
             break;
         case TurnActionType::Strike:
             std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(action);
             auto opponents = data.get_opponents(id);
             strike->SetTarget(opponents.at(0));
-            std::cout << "Strike" << std::endl;
             break;
     }
 

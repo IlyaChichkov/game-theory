@@ -31,6 +31,8 @@ private:
 
     void setup_teams();
     void complete_turn();
+    void print_turn_results();
+    void print_match_results();
     void compute_turn_results();
 
 public:
