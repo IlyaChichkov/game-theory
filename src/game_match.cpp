@@ -33,8 +33,7 @@ void GameMatch::setup_teams() {
         team->set_production(initial_production);
         auto actions = matchActions.Create();
         for (const auto action: actions) {
-            if(action->actionType == TurnActionType::ProductionChange)
-            {
+            if(action->actionType == TurnActionType::ProductionChange) {
                 std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(action);
                 pc->SetOwner(team_id);
             }
@@ -48,8 +47,7 @@ void GameMatch::complete_turn() {
     TurnData turnData;
     turnData.teams = teams;
 
-    for(const auto& team : this->teams)
-    {
+    for(const auto& team : this->teams) {
         auto selectedAction = team->make_turn(turnData);
         selectedAction->Complete(&turnData);
     }
@@ -73,8 +71,7 @@ void GameMatch::start() {
 
 void GameMatch::print_turn_results() {
     std::cout << "> TURN RESULTS <" << std::endl;
-    for(const auto& team : this->teams)
-    {
+    for(const auto& team : this->teams) {
         std::cout << "> Team_" << team->ID() << "; Production: " << team->get_production() << std::endl;
     }
 }
@@ -82,19 +79,15 @@ void GameMatch::print_turn_results() {
 void GameMatch::print_match_results() {
     std::cout << "> MATCH RESULTS <" << std::endl;
     int max_production = 0;
-    for(const auto& team : this->teams)
-    {
-        if(team->get_production() > max_production)
-        {
+    for(const auto& team : this->teams) {
+        if(team->get_production() > max_production) {
             max_production = team->get_production();
         }
     }
 
     std::cout << "Production Winners:" << std::endl;
-    for(const auto& team : this->teams)
-    {
-        if(team->get_production() == max_production)
-        {
+    for(const auto& team : this->teams) {
+        if(team->get_production() == max_production) {
             std::cout << "> Team_" << team->ID() << std::endl;
         }
     }

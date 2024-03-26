@@ -8,7 +8,7 @@
 std::vector<std::shared_ptr<Team>> TurnData::get_opponents(int team_id) {
     std::vector<std::shared_ptr<Team>> opponents;
     for (const auto team : teams) {
-        if(team->ID() != team_id){
+        if(team->ID() != team_id) {
             opponents.push_back(team);
         }
     }

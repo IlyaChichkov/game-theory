@@ -32,8 +32,7 @@ void ProvokeStrike::Complete(TurnData *turnData) const {
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == strikeTarget->ID()) {
             int p = team_ptr->get_production() / 2;
-            if(p < 100)
-            {
+            if(p < 100) {
                 p = 100;
             }
             team_ptr->set_production(p);
