@@ -79,14 +79,15 @@ void GameMatch::start() {
 }
 
 void GameMatch::print_turn_results() {
-    std::cout << "> TURN RESULTS <" << std::endl;
+    std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "> Team_" << team->ID() << "; Production: " << team->get_production() << std::endl;
+        std::cout << "| Team_" << team->ID() << "; Production: " << team->get_production() << std::endl;
     }
+    std::cout << "|------------------------------------|" << std::endl;
 }
 
 void GameMatch::print_match_results() {
-    std::cout << "> MATCH RESULTS <" << std::endl;
+    std::cout << "|----------- MATCH RESULTS ----------|" << std::endl;
     int max_production = 0;
     for(const auto& team : this->teams) {
         if(team->get_production() > max_production) {
@@ -94,15 +95,17 @@ void GameMatch::print_match_results() {
         }
     }
 
-    std::cout << "Production Winners:" << std::endl;
+    std::cout << "| Production Winners:" << std::endl;
     for(const auto& team : this->teams) {
         if(team->get_production() == max_production) {
-            std::cout << "> Team_" << team->ID() << std::endl;
+            std::cout << "| Team_" << team->ID() << std::endl;
         }
     }
 
     int max_funds = 0;
     // TODO: Funds winners compute...
+
+    std::cout << "|------------------------------------|" << std::endl;
 }
 
 GameMatch::~GameMatch() {
