@@ -1,11 +1,17 @@
 #ifndef GAME_THEORY_GAME_MATCH_H
 #define GAME_THEORY_GAME_MATCH_H
 
+#include <fstream>
+#include <filesystem>
 #include <vector>
 #include <memory>
 #include <map>
 #include <algorithm>
 #include "turn_action.h"
+#include "lua.hpp"
+#include "LuaBridge/LuaBridge.h"
+
+using namespace luabridge;
 
 class ITurnAction;
 class Team;
@@ -35,6 +41,9 @@ private:
 
     int total_production = 0;
     int sell_price = 0;
+
+    std::string teams_folder_path;
+    std::vector<std::string> teams_files;
 
     void setup_teams();
     void complete_turn();
