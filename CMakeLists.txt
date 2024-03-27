@@ -10,4 +10,5 @@ add_executable(game_theory main.cpp src/team.cpp
         src/my_team.cpp
         src/bots/bull_team.cpp
         src/bots/angry_team.cpp
+        src/utils.cpp
 )
