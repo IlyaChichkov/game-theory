@@ -10,7 +10,7 @@ class AngryTeam : public Team {
 public:
     explicit AngryTeam(int _id);
     explicit AngryTeam(int _id, std::string _name);
-    std::shared_ptr<ITurnAction> make_turn(TurnData match);
+    std::shared_ptr<ITurnAction> make_turn(TurnData match) override;
     ~AngryTeam();
 };
 

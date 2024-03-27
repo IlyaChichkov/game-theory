@@ -9,7 +9,7 @@ class BullTeam : public Team {
 public:
     explicit BullTeam(int _id);
     explicit BullTeam(int _id, std::string _name);
-    std::shared_ptr<ITurnAction> make_turn(TurnData match);
+    std::shared_ptr<ITurnAction> make_turn(TurnData match) override;
     ~BullTeam();
 };
 
