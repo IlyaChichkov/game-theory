@@ -11,9 +11,6 @@ class ITurnAction;
 
 class Team
 {
-    /*
-     *  Абстрактный класс для команды, выполняющей ходы
-     */
 protected:
     int id;
     int production = 0;
@@ -22,12 +19,13 @@ protected:
     bool has_strike = false;
 
 public:
+    std::string filePath;
     int funds_delta_per_turn = 0;
     std::string name = "Name";
     std::vector<std::shared_ptr<ITurnAction>> turn_actions;
 
     Team(int _id);
-    Team(int _id, std::string _name);
+    Team(int _id, std::string _name, std::string _filePath);
     void set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val);
 
     int get_production();

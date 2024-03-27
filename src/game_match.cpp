@@ -2,6 +2,13 @@
 #include "team.h"
 #include "turn_action.h"
 
+void print(const std::string& s) {
+    std::cout << s;
+}
+
+void printLn(const std::string& s) {
+    std::cout << s << std::endl;
+}
 
 std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
     std::vector<std::shared_ptr<ITurnAction>> actions;
@@ -26,12 +33,24 @@ void GameMatch::setup_teams() {
     int initial_production = 250;
     DefaultMatchActions matchActions;
 
-    teams.push_back(std::make_shared<BullTeam>(0, "Bull A"));
-    teams.push_back(std::make_shared<BullTeam>(1, "Bull B"));
-    teams.push_back(std::make_shared<AngryTeam>(2, "Gore C"));
-    teams.push_back(std::make_shared<MyTeam>(3, "Randy "));
+    lua_State* L = luaL_newstate();
+    luaL_openlibs(L);
 
-    for (int i = 0; i < 4; ++i) {
+    for(int i = 0; i < teams_files.size(); ++i) {
+        std::string filePath = teams_folder_path + "\\" + teams_files[i];
+        if(luaL_dofile(L, filePath.c_str()) != 0) {
+            fprintf(stderr, "Error executing Lua script: %s\n", lua_tostring(L, -1));
+        }
+
+        LuaRef teamData = getGlobal(L, "team");
+
+        for(int j = 0; j < (int)teamData["count"]; ++j) {
+            std::string teamName = std::string(teamData["name"]) + " (" + std::to_string(j) + ")";
+            teams.push_back(std::make_shared<Team>(i, teamName, filePath));
+        }
+    }
+
+    for (int i = 0; i < teams.size(); ++i) {
         auto team = teams.at(i);
         int team_id = team->ID();
         team->set_production(initial_production);
@@ -47,8 +66,6 @@ void GameMatch::setup_teams() {
 }
 
 void GameMatch::complete_turn() {
-    TurnData turnData;
-    turnData.teams = teams;
 
     for(const auto& team : this->teams) {
         team->before_turn();
@@ -61,10 +78,26 @@ void GameMatch::complete_turn() {
      *  Исполнить lua функцию получения карты
      */
 
+    lua_State* L = luaL_newstate();
+    luaL_openlibs(L);
+    getGlobalNamespace(L).addFunction("print", print);
+    getGlobalNamespace(L).addFunction("printLn", printLn);
+
     // Выполнение хода каждой команды
     for(const auto& team : this->teams) {
-        std::cout << "Team_" << team->ID() << std::endl;
-        auto selectedAction = team->make_turn(turnData);
+        TurnData turnData(team);
+        turnData.teams = teams;
+
+        std::string filePath = team->filePath;
+        if(luaL_dofile(L, filePath.c_str()) != 0) {
+            fprintf(stderr, "Error executing Lua script: %s\n", lua_tostring(L, -1));
+        }
+
+        LuaRef selectAction = getGlobal(L, "getTurnAction");
+        int selectedActionIndex = selectAction(turnData.generate_lua_ref(L));
+        std::cout << "Selected action index: " << selectedActionIndex << std::endl;
+
+        std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
         selectedAction->complete(&turnData);
 
         auto& actions = team->turn_actions;
@@ -105,6 +138,27 @@ void GameMatch::start() {
      *  прочитав из файла переменную name, в объект Team добавить имя файла
      *  - если нет, то создать папку и стандартные файлы
      */
+
+    teams_folder_path = std::filesystem::current_path().string() + "/teams";
+    if(std::filesystem::exists(teams_folder_path)) {
+        std::filesystem::directory_iterator it(teams_folder_path);
+
+        for (auto& entry : it) {
+            if (is_regular_file(entry)) {
+                teams_files.push_back(entry.path().filename().string());
+            }
+        }
+
+        for (const std::string& filename : teams_files) {
+            std::cout << filename << std::endl;
+        }
+    } else {
+        try {
+            std::filesystem::create_directory(teams_folder_path);
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Error: Failed to create teams folder";
+        }
+    }
 
     setup_teams();
     for (int i = 0; i < 14; ++i) {

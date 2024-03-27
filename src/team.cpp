@@ -5,9 +5,10 @@ Team::Team(int _id) {
     id = _id;
 }
 
-Team::Team(int _id, std::string _name) {
+Team::Team(int _id, std::string _name, std::string _filePath) {
     id = _id;
     name = _name;
+    filePath = _filePath;
 }
 
 void Team::set_turn_actions(std::vector<std::shared_ptr<ITurnAction>> val)
