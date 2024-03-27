@@ -1,8 +1,5 @@
 #include "game_match.h"
 #include "team.h"
-#include "my_team.h"
-#include "bots/bull_team.h"
-#include "bots/angry_team.h"
 #include "turn_action.h"
 
 
