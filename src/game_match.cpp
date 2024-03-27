@@ -57,6 +57,13 @@ void GameMatch::complete_turn() {
         team->before_turn();
     }
 
+    /*
+     *  TODO:
+     *  Из каждого объекта Team прочитать имя файла и открыть данный lua файл
+     *  Отправить в файл данные о текущем ходе
+     *  Исполнить lua функцию получения карты
+     */
+
     // Выполнение хода каждой команды
     for(const auto& team : this->teams) {
         std::cout << "Team_" << team->ID() << std::endl;
@@ -93,6 +100,15 @@ int GameMatch::get_income(int production) {
 }
 
 void GameMatch::start() {
+    /*
+     *  TODO:
+     *  Проверить существует ли папка 'teams'
+     *  - если да, то загрузить от туда скрипты lua и
+     *  добавить в переменную teams объект на каждый файл lua
+     *  прочитав из файла переменную name, в объект Team добавить имя файла
+     *  - если нет, то создать папку и стандартные файлы
+     */
+
     setup_teams();
     for (int i = 0; i < 14; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
