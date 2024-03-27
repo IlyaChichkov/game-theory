@@ -97,7 +97,7 @@ void GameMatch::complete_turn() {
                 std::cerr << "Lua turn action return error: Wrong action index type!";
             }
             selectedActionIndex = selectedActionTable["index"].cast<int>() - 1;
-            std::cout << "Selected action index: " << selectedActionIndex << std::endl;
+
             std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
 
             switch (selectedAction->actionType) {
@@ -187,6 +187,7 @@ void GameMatch::start() {
 }
 
 void GameMatch::print_turn_results() {
+    if(loggingLevel < 1) return;
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
         std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
