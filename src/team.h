@@ -50,8 +50,6 @@ public:
     std::vector<std::shared_ptr<ITurnAction>> get_strike_actions();
 
     int ID() const;
-
-    virtual std::shared_ptr<ITurnAction> make_turn(TurnData match) = 0;
     virtual ~Team();
 };
 
