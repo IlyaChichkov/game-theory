@@ -30,6 +30,10 @@ ProvokeStrike::ProvokeStrike() {
 }
 
 void ProvokeStrike::complete(TurnData *turnData) const {
+    if(strikeTarget == nullptr) {
+        return;
+    }
+
     std::cout << "complete: Provoke Strike | Target is team_" << strikeTarget->ID() << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == strikeTarget->ID()) {
