@@ -59,6 +59,4 @@ BullTeam::BullTeam(int _id, std::string _name) : Team(_id, _name) {
 
 }
 
-BullTeam::~BullTeam() {
-
-}
+BullTeam::~BullTeam() = default;

@@ -146,6 +146,4 @@ void GameMatch::print_match_results() {
     std::cout << "|------------------------------------|" << std::endl;
 }
 
-GameMatch::~GameMatch() {
-
-}
+GameMatch::~GameMatch() = default;

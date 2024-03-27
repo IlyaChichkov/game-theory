@@ -13,7 +13,7 @@ class Team;
 class MatchActionsFactory {
 public:
     virtual std::vector<std::shared_ptr<ITurnAction>> create() const = 0;
-    virtual ~MatchActionsFactory() {}
+    virtual ~MatchActionsFactory() = default;
 };
 
 class DefaultMatchActions : public MatchActionsFactory {
