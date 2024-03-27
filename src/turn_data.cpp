@@ -27,10 +27,10 @@ LuaRef TurnData::generate_lua_ref(lua_State* L) {
     v["this"]["actions"] = newTable(L);
     v["this"]["actions_count"] = receiveTeam->turn_actions.size();
 
-    for (int i = 0; i < receiveTeam->turn_actions.size(); ++i) {
-        const auto &action = receiveTeam->turn_actions[i];
+    for (int i = 1; i <= receiveTeam->turn_actions.size(); ++i) {
+        const auto &action = receiveTeam->turn_actions[i-1];
         v["this"]["actions"][i] = newTable(L);
-        v["this"]["actions"][i]["id"] = (int)(i);
+        v["this"]["actions"][i]["id"] = i;
         v["this"]["actions"][i]["type"] = (int)(action->actionType);
         switch (action->actionType) {
             case TurnActionType::None:
@@ -46,10 +46,12 @@ LuaRef TurnData::generate_lua_ref(lua_State* L) {
     // Данные об оппонентах
     v["opponents"] = newTable(L);
     v["opponents_count"] = teams.size();
-    for (int i = 0; i < teams.size(); ++i) {
+    for (int i = 1; i <= teams.size(); ++i) {
+        const auto &opponent = teams.at(i-1);
         v["opponents"][i] = newTable(L);
-        v["opponents"][i]["production"] = teams.at(i)->get_production();
-        v["opponents"][i]["funds"] = teams.at(i)->get_funds();
+        v["opponents"][i]["id"] = opponent->ID();
+        v["opponents"][i]["production"] = opponent->get_production();
+        v["opponents"][i]["funds"] = opponent->get_funds();
     }
 
     // Общие данные
