@@ -54,6 +54,7 @@ private:
     void compute_turn_results();
 
 public:
+    int loggingLevel = 0;
     void start();
 
     ~GameMatch();
