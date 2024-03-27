@@ -40,6 +40,4 @@ MyTeam::MyTeam(int _id, std::string _name) : Team(_id, _name) {
 
 }
 
-MyTeam::~MyTeam() {
-
-}
+MyTeam::~MyTeam() = default;
