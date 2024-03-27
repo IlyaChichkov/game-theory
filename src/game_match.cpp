@@ -73,13 +73,6 @@ void GameMatch::complete_turn() {
         team->before_turn();
     }
 
-    /*
-     *  TODO:
-     *  Из каждого объекта Team прочитать имя файла и открыть данный lua файл
-     *  Отправить в файл данные о текущем ходе
-     *  Исполнить lua функцию получения карты
-     */
-
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
     getGlobalNamespace(L).addFunction("print", print);
@@ -163,15 +156,6 @@ int GameMatch::get_income(int production) {
 }
 
 void GameMatch::start() {
-    /*
-     *  TODO:
-     *  Проверить существует ли папка 'teams'
-     *  - если да, то загрузить от туда скрипты lua и
-     *  добавить в переменную teams объект на каждый файл lua
-     *  прочитав из файла переменную name, в объект Team добавить имя файла
-     *  - если нет, то создать папку и стандартные файлы
-     */
-
     teams_folder_path = std::filesystem::current_path().string() + "/teams";
     if(std::filesystem::exists(teams_folder_path)) {
         std::filesystem::directory_iterator it(teams_folder_path);
