@@ -33,9 +33,11 @@ void GameMatch::setup_teams() {
     int initial_production = 250;
     DefaultMatchActions matchActions;
 
+    if(teams_files.empty()) return;
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
 
+    int team_id = 0;
     for(int i = 0; i < teams_files.size(); ++i) {
         std::string filePath = teams_folder_path + "\\" + teams_files[i];
         if(luaL_dofile(L, filePath.c_str()) != 0) {
@@ -45,8 +47,8 @@ void GameMatch::setup_teams() {
         LuaRef teamData = getGlobal(L, "team");
 
         for(int j = 0; j < (int)teamData["count"]; ++j) {
-            std::string teamName = std::string(teamData["name"]) + " (" + std::to_string(j) + ")";
-            teams.push_back(std::make_shared<Team>(i, teamName, filePath));
+            std::string teamName = teamData["name"].tostring() + " (" + std::to_string(j) + ")";
+            teams.push_back(std::make_shared<Team>(team_id++, teamName, filePath));
         }
     }
 
@@ -118,6 +120,7 @@ void GameMatch::complete_turn() {
 
 void GameMatch::compute_turn_results() {
     total_production = 0;
+    if(teams.empty()) return;
     for(const auto& team : this->teams) {
         total_production += team->get_production();
     }
