@@ -4,6 +4,9 @@
 #include <iostream>
 
 class Utils {
+    /*
+     *  Общие полезные функции, которые могут быть использованы везде
+     */
 public:
     static int get_rand_int(int from, int to);
 };
