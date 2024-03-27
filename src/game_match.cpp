@@ -6,7 +6,7 @@
 #include "turn_action.h"
 
 
-std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::Create() const  {
+std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
     std::vector<std::shared_ptr<ITurnAction>> actions;
     actions.push_back(std::make_shared<ProductionChange>(-10));
     actions.push_back(std::make_shared<ProductionChange>(-10));

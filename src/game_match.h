@@ -12,13 +12,13 @@ class Team;
 
 class MatchActionsFactory {
 public:
-    virtual std::vector<std::shared_ptr<ITurnAction>> Create() const = 0;
+    virtual std::vector<std::shared_ptr<ITurnAction>> create() const = 0;
     virtual ~MatchActionsFactory() {}
 };
 
 class DefaultMatchActions : public MatchActionsFactory {
 public:
-    [[nodiscard]] std::vector<std::shared_ptr<ITurnAction>> Create() const override;
+    [[nodiscard]] std::vector<std::shared_ptr<ITurnAction>> create() const override;
 };
 
 class GameMatch {
