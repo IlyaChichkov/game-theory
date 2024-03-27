@@ -38,7 +38,7 @@ void GameMatch::setup_teams() {
         auto team = teams.at(i);
         int team_id = team->ID();
         team->set_production(initial_production);
-        auto actions = matchActions.Create();
+        auto actions = matchActions.create();
         for (const auto action: actions) {
             if(action->actionType == TurnActionType::ProductionChange) {
                 std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(action);
