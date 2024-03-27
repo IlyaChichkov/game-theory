@@ -45,6 +45,7 @@ private:
     std::string teams_folder_path;
     std::vector<std::string> teams_files;
 
+    std::shared_ptr<Team> get_team_by_id(int id);
     void setup_teams();
     void complete_turn();
     int get_income(int production);

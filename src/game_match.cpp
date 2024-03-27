@@ -246,4 +246,13 @@ void GameMatch::print_match_results() {
     std::cout << "|------------------------------------|" << std::endl;
 }
 
+std::shared_ptr<Team> GameMatch::get_team_by_id(int id) {
+    for(const auto& team : this->teams) {
+        if(team->ID() == id) {
+            return team;
+        }
+    }
+    return nullptr;
+}
+
 GameMatch::~GameMatch() = default;
