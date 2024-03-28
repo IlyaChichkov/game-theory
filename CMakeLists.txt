@@ -15,4 +15,4 @@ add_executable(game_theory main.cpp src/team.cpp
         src/utils.cpp
 )
 
-target_link_libraries(game_theory ${CMAKE_SOURCE_DIR}/lib/lua54.lib)
+target_link_libraries(game_theory ${CMAKE_SOURCE_DIR}/lib/liblua54.so)
