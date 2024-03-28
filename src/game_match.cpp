@@ -182,6 +182,15 @@ void GameMatch::start() {
     }
 
     print_match_configuration();
+
+    if(this->teams_files.empty()) {
+        std::cout << "|-------------- ERROR! --------------|"   << std::endl;
+        std::cout << "| NO TEAM FILES LOADED. PLEASE PROVIDE "  << std::endl;
+        std::cout << "| LUA SCRIPTS IN 'teams' FOLDER"          << std::endl;
+        std::cout << "|------------------------------------|"   << std::endl;
+        return;
+    }
+
     setup_teams();
     for (int i = 0; i < turnsCount; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
