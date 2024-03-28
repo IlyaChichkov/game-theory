@@ -9,13 +9,6 @@ turnActionType = {
     [2] = "Strike"
 }
 
-turnData = {}
-
-turnResult = {
-    turnIndex = -1
-
-}
-
 getTurnAction = function(turnData)
     -- 1) Max production increase
     local increaseActions = {}
@@ -42,7 +35,6 @@ getTurnAction = function(turnData)
         return {index = strikeActions[1]["id"], target = opponents[1]["id"]}
     end
     -- 3) Other
-
     local decreaseActions = turnData["this"]["actions"]
     if #decreaseActions > 0 then
         table.sort(decreaseActions, function(a, b) return a["delta"] < b["delta"] end)
