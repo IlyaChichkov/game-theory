@@ -38,6 +38,13 @@ private:
     int turnsCount = 14;
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;
+
+    /*
+     *  TODO: Добавить данные о общем производстве, текущей
+     *        цене товара, таблицы зависимости издержек
+     *        от производства, таблицы зависимости цены от
+     *        общего производства
+     */
     std::map<int, int> productsPriceTable;
     std::map<int, int> productionCostsTable;
 
