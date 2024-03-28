@@ -181,6 +181,7 @@ void GameMatch::start() {
         }
     }
 
+    print_match_configuration();
     setup_teams();
     for (int i = 0; i < turnsCount; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
@@ -188,6 +189,17 @@ void GameMatch::start() {
         print_turn_results();
     }
     print_match_results();
+}
+
+void GameMatch::print_match_configuration() {
+    if(loggingLevel < 1) return;
+    std::cout << "|-------- MATCH CONFIGURATION -------|"   << std::endl;
+    std::cout << "| TURNS COUNT: " << turnsCount            << std::endl;
+    std::cout << "| LOADED TEAMS:"                          << std::endl;
+    for(const auto& file : this->teams_files) {
+        std::cout << "| " << file << std::endl;
+    }
+    std::cout << "|------------------------------------|"   << std::endl;
 }
 
 void GameMatch::print_turn_results() {
