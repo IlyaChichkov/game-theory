@@ -9,8 +9,6 @@ turnActionType = {
     [2] = "Strike"
 }
 
-turnData = {}
-
 getTurnAction = function(turnData)
     actionIndex = math.random(turnData["this"]["actions_count"])
     if turnActionType[turnData["this"]["actions"][actionIndex]["type"]] == "Strike" then
