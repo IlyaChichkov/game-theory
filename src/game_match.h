@@ -34,6 +34,8 @@ class GameMatch {
      *  Управляет циклом игры, производит ходы
      */
 private:
+    std::shared_ptr<MatchActionsFactory> matchActionsFactory;
+    int turnsCount = 14;
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;
     std::map<int, int> productsPriceTable;
@@ -54,6 +56,7 @@ private:
     void compute_turn_results();
 
 public:
+    GameMatch(std::shared_ptr<MatchActionsFactory> _matchActions);
     int loggingLevel = 0;
     void start();
 

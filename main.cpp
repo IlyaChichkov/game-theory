@@ -3,7 +3,7 @@
 #include "src/game_match.h"
 
 void start_match(int &loggingLevel) {
-    GameMatch match;
+    GameMatch match(std::make_shared<DefaultMatchActions>());
     match.loggingLevel = loggingLevel;
     match.start();
 }
