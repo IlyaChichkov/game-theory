@@ -29,9 +29,13 @@ std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
     return actions;
 }
 
+GameMatch::GameMatch(std::shared_ptr<MatchActionsFactory> _matchActions) {
+    matchActionsFactory = std::move(_matchActions);
+    turnsCount = matchActionsFactory->create().size();
+}
+
 void GameMatch::setup_teams() {
     int initial_production = 250;
-    DefaultMatchActions matchActions;
 
     if(teams_files.empty()) return;
     lua_State* L = luaL_newstate();
@@ -56,7 +60,7 @@ void GameMatch::setup_teams() {
         auto team = teams.at(i);
         int team_id = team->ID();
         team->set_production(initial_production);
-        auto actions = matchActions.create();
+        auto actions = matchActionsFactory->create();
         for (const auto action: actions) {
             if(action->actionType == TurnActionType::ProductionChange) {
                 std::shared_ptr<ProductionChange> pc = std::dynamic_pointer_cast<ProductionChange>(action);
@@ -178,7 +182,7 @@ void GameMatch::start() {
     }
 
     setup_teams();
-    for (int i = 0; i < 14; ++i) {
+    for (int i = 0; i < turnsCount; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
         complete_turn();
         print_turn_results();
