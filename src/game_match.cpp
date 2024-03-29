@@ -72,6 +72,10 @@ void GameMatch::setup_teams() {
 }
 
 void GameMatch::complete_turn() {
+    CommonData cd{
+            turnIndex,
+            turnsCount,
+    };
 
     for(const auto& team : this->teams) {
         team->before_turn();
@@ -86,6 +90,7 @@ void GameMatch::complete_turn() {
     for(const auto& team : this->teams) {
         TurnData turnData(team);
         turnData.teams = teams;
+        turnData.commonData = cd;
 
         std::string filePath = team->filePath;
         if(luaL_dofile(L, filePath.c_str()) != 0) {
@@ -196,6 +201,7 @@ void GameMatch::start() {
         std::cout << "[TURN " << i << "]" << std::endl;
         complete_turn();
         print_turn_results();
+        turnIndex++;
     }
     print_match_results();
 }

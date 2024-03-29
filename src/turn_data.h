@@ -11,6 +11,13 @@ using namespace luabridge;
 
 class Team;
 
+struct CommonData {
+    int turnIndex;
+    int turnsCount;
+    int sellPrice;
+    int totalProducts;
+};
+
 class TurnData {
     /*
      *  Содержит всю информацию об игре, командах на
@@ -19,9 +26,10 @@ class TurnData {
 private:
     std::shared_ptr<Team> receiveTeam;
 public:
+    CommonData commonData;
+
     TurnData(std::shared_ptr<Team> receiveTeam);
     std::vector<std::shared_ptr<Team>> teams;
-
     std::vector<std::shared_ptr<Team>> get_opponents(int team_id);
 
     LuaRef generate_lua_ref(lua_State* L);
