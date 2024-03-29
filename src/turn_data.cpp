@@ -43,6 +43,11 @@ LuaRef TurnData::generate_lua_ref(lua_State* L) {
         }
     }
 
+    /*
+     *  TODO: Добавить данные о истории производства,
+     *        истории денежных средств
+     */
+
     // Данные об оппонентах
     v["opponents"] = newTable(L);
     v["opponents_count"] = teams.size();
@@ -53,6 +58,11 @@ LuaRef TurnData::generate_lua_ref(lua_State* L) {
         v["opponents"][i]["production"] = opponent->get_production();
         v["opponents"][i]["funds"] = opponent->get_funds();
     }
+
+    /*
+     *  TODO: Добавить данные о истории производства,
+     *        истории денежных средств
+     */
 
     // Общие данные
     v["match"] = newTable(L);
