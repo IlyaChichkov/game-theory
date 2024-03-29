@@ -35,6 +35,7 @@ class GameMatch {
      */
 private:
     std::shared_ptr<MatchActionsFactory> matchActionsFactory;
+    int turnIndex = 1;
     int turnsCount = 14;
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;

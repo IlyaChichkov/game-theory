@@ -55,6 +55,8 @@ LuaRef TurnData::generate_lua_ref(lua_State* L) {
     }
 
     // Общие данные
+    v["match"] = newTable(L);
+    v["match"]["turnIndex"] = commonData.turnIndex;
     /*
      *  TODO: Добавить в Lua API данные о общем производстве, текущей
      *        цене товара, таблицы зависимости издержек
