@@ -63,6 +63,7 @@ private:
     void print_turn_results();
     void print_match_results();
     void compute_turn_results();
+    void complete_action(lua_State* L, std::shared_ptr<Team> team);
 
 public:
     GameMatch(std::shared_ptr<MatchActionsFactory> _matchActions);
