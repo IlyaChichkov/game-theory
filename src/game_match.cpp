@@ -34,6 +34,7 @@ void GameMatch::setup_teams() {
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
 
+    // Load teams options from teams folder
     int team_id = 0;
     for(int i = 0; i < teams_files.size(); ++i) {
         std::string filePath = teams_folder_path + "\\" + teams_files[i];
@@ -49,6 +50,7 @@ void GameMatch::setup_teams() {
         }
     }
 
+    // Prepare teams objects
     for (int i = 0; i < teams.size(); ++i) {
         auto team = teams.at(i);
         int team_id = team->ID();
@@ -71,7 +73,7 @@ void report_errors(lua_State *luaState, int status) {
 
     std::cerr << "[LUA ERROR] " << lua_tostring(luaState, -1) << std::endl;
 
-    // remove error message from Lua state
+    // Remove error message from Lua state
     lua_pop(luaState, 1);
 }
 
@@ -80,7 +82,7 @@ void GameMatch::complete_turn() {
         team->before_turn();
     }
 
-    // Выполнение хода каждой команды
+    // Loop through teams and perform selected action
     for(const auto& team : this->teams) {
         lua_State* L = luaL_newstate();
         luaApiRegistration(L);
@@ -181,7 +183,8 @@ int GameMatch::get_income(int production) {
 }
 
 void GameMatch::start() {
-    teams_folder_path = std::filesystem::current_path().string() + "/teams";
+    // Check teams folder & load teams
+    teams_folder_path = std::filesystem::current_path().string() + teamsFolder;
     if(std::filesystem::exists(teams_folder_path)) {
         std::filesystem::directory_iterator it(teams_folder_path);
 
