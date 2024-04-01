@@ -18,6 +18,7 @@ class ITurnAction {
      */
 public:
     TurnActionType actionType = TurnActionType::None;
+    int getType();
     virtual void complete(TurnData *turnData) const = 0;
     virtual ~ITurnAction() {}
 };
