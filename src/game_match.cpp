@@ -3,6 +3,32 @@
 #include "turn_action.h"
 #include "lua_serialize.h"
 
+double income_func(double x, double u, double h) {
+    // Constant term
+    const double constant_term = 100000 / (h * std::sqrt(2 * 3.1415));
+
+    // Exponential term
+    double exponent = std::pow(x - u, 2) / (2 * std::pow(h, 2.5));
+
+    // Combine terms and return the result
+    return constant_term * std::exp(exponent);
+}
+
+double square_func(double x, double a, double b, double c) {
+    // Inner term for the exponent
+    double inner_term = std::pow(x - 700 - b, 2) / std::pow(c, 2);
+
+    // Combine terms inside the exponential
+    double exponent = std::exp(inner_term);
+
+    // Return the final expression
+    return 200 + a * exponent;
+}
+
+double expenses_func(double x, double u, double h) {
+    return square_func(x, 6, 0, 171)*0.5+0.1*-income_func(x, 700, 100);
+}
+
 std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
     std::vector<std::shared_ptr<ITurnAction>> actions;
     actions.push_back(std::make_shared<ProductionChange>(-10));
@@ -118,8 +144,8 @@ void GameMatch::complete_turn() {
     compute_turn_results();
 
     for(const auto& team : this->teams) {
-        team->pay_production_cost();
-        team->add_funds(get_income(team->get_production()));
+        int p = team->get_production();
+        team->add_funds(get_income(p) - get_expenses(p));
     }
 }
 
@@ -184,8 +210,11 @@ void GameMatch::compute_turn_results() {
     for(const auto& team : this->teams) {
         total_production += team->get_production();
     }
-    int max_production = 1000;
-    sell_price = (int)(70 * max_production / total_production);
+    sell_price = (int)(income_func(total_production, 700, 100));
+}
+
+int GameMatch::get_expenses(int production) {
+    return (int)(expenses_func(production, 700, 100));
 }
 
 int GameMatch::get_income(int production) {
@@ -256,7 +285,11 @@ void GameMatch::print_turn_results() {
     if(loggingLevel < 1) return;
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
+        if(team->funds_delta_per_turn >= 0) {
+            std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
+        } else {
+            std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (" << team->funds_delta_per_turn << ")" << std::endl;
+        }
     }
     std::cout << "|------------------------------------|" << std::endl;
 }
