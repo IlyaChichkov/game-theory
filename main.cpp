@@ -38,6 +38,7 @@ int main() {
                 std::cout << "2) Turns detailed log"   << std::endl;
                 std::cin >> matchLoggingLevel;
                 break;
+                // TODO: Add option to run several matches
             default:
                 break;
         }
