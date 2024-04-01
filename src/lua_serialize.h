@@ -96,6 +96,8 @@ struct LuaActions {
 
 struct LuaTurnData {
     int teamId;
+    int turn;
+    int turnsCount;
     lua_State* L;
     LuaActions actions;
     std::vector<std::shared_ptr<Team>> teams;
