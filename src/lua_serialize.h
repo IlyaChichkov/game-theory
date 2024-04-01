@@ -82,7 +82,7 @@ struct LuaActions {
             if(a.second->actionType != TurnActionType::ProductionChange) continue;
             std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a.second);
             if(action->get_delta() == val) {
-                v["index"] = a.first;
+                v["id"] = a.first;
                 v["delta"] = action->get_delta();
                 break;
             }
@@ -95,7 +95,7 @@ struct LuaActions {
         v = newTable(L);
         for (const auto &a : my_actions) {
             if(a.second->actionType != TurnActionType::Strike) continue;
-            v["index"] = a.first;
+            v["id"] = a.first;
             break;
         }
         return v;
