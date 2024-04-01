@@ -9,10 +9,12 @@ turnActionType = {
     [2] = "Strike"
 }
 
-getTurnAction = function(turnData)
-    actionIndex = math.random(turnData["this"]["actions_count"])
-    if turnActionType[turnData["this"]["actions"][actionIndex]["type"]] == "Strike" then
-        return {index = actionIndex, target = turnData["opponents"][1]["id"]}
+getTurnAction = function()
+    local all_actions = actionMap:get_all()
+    local randomIndex = math.random(#all_actions)
+    local randomOpponent = math.random(#turnData:get_opponents())
+    if turnActionType[all_actions[randomIndex]["type"]] == "Strike" then
+        return {index = all_actions[randomIndex]["id"], target = turnData:get_opponents()[randomOpponent]["id"]}
     end
-    return {index = actionIndex}
+    return {index = all_actions[randomIndex]["id"]}
 end
