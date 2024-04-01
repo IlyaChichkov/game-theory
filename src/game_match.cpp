@@ -128,7 +128,17 @@ void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
     turnData.teams = teams;
 
     LuaRef selectAction = getGlobal(L, "getTurnAction");
-    LuaRef selectedActionTable = selectAction();
+    LuaRef selectedActionTable = nullptr;
+
+    enableExceptions(L);
+    try {
+        selectedActionTable = selectAction();
+    }
+    catch (const luabridge::LuaException &e) {
+        std::cerr << e.what() << std::endl;
+        teamFileHasErrors = true;
+        return;
+    }
 
     int selectedActionIndex = 0;
     if (selectedActionTable.isTable()) {
@@ -219,6 +229,12 @@ void GameMatch::start() {
     for (int i = 0; i < turnsCount; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
         complete_turn();
+        if(teamFileHasErrors) {
+            std::cout << "|-------------- ERROR! --------------|"   << std::endl;
+            std::cout << "| ONE OF THE LUA SCRIPTS HAS ERRORS"  << std::endl;
+            std::cout << "|------------------------------------|"   << std::endl;
+            return;
+        }
         print_turn_results();
         turnIndex++;
     }
