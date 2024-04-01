@@ -25,6 +25,23 @@ price tables and production expenses.
 
 **x2** `Provoke strike`
 
+## Build & Run
+
+```bash
+git clone git@github.com:IlyaChichkov/game-theory.git
+```
+
+```bash
+mkdir build
+cd build
+cmake ..
+```
+
+```bash
+cp -r ../example/teams ./
+./game_theory
+```
+
 ## API
 
 **actionMap**
