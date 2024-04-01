@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <cmath>
 #include <algorithm>
 #include "turn_action.h"
 #include "lua.hpp"
@@ -60,10 +61,14 @@ private:
     std::shared_ptr<Team> get_team_by_id(int id);
     void setup_teams();
     void complete_turn();
+
+    int get_expenses(int production);
     int get_income(int production);
+
     void print_match_configuration();
     void print_turn_results();
     void print_match_results();
+
     void compute_turn_results();
     void complete_action(lua_State* L, std::shared_ptr<Team> team);
 
