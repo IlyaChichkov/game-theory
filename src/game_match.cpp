@@ -1,6 +1,7 @@
 #include "game_match.h"
 #include "team.h"
 #include "turn_action.h"
+#include "lua_serialize.h"
 
 void print(const std::string& s) {
     std::cout << s;
@@ -92,10 +93,6 @@ void GameMatch::complete_turn() {
         team->before_turn();
     }
 
-    lua_State* L = luaL_newstate();
-    luaL_openlibs(L);
-    getGlobalNamespace(L).addFunction("print", print);
-    getGlobalNamespace(L).addFunction("printLn", printLn);
 
     // Выполнение хода каждой команды
     for(const auto& team : this->teams) {
@@ -103,20 +100,66 @@ void GameMatch::complete_turn() {
         turnData.teams = teams;
         turnData.commonData = cd;
 
+        lua_State* L = luaL_newstate();
+        luaL_openlibs(L);
+        luabridge::getGlobalNamespace(L)
+                .beginClass<LuaActions>("LuaActions")
+                .addFunction("get",                 &LuaActions::get)
+                .addFunction("get_all",             &LuaActions::get_all)
+                .addFunction("get_prod_change",     &LuaActions::get_prod_change)
+                .addFunction("get_strike",          &LuaActions::get_strike)
+                .addFunction("get_incr",            &LuaActions::get_incr)
+                .addFunction("get_decr",            &LuaActions::get_decr)
+                .endClass();
+        luabridge::getGlobalNamespace(L)
+                .beginClass<LuaTurnData>("LuaTurnData")
+                    .addProperty("id",              &LuaTurnData::teamId)
+                    .addFunction("get_opponents",   &LuaTurnData::get_opponents)
+                .endClass();
+        luabridge::getGlobalNamespace(L)
+                .beginClass<Team>("Team")
+                .endClass();
+        luabridge::getGlobalNamespace(L)
+                .beginClass<ITurnAction>("ITurnAction")
+                    .addFunction("type", &ITurnAction::getType)
+                .endClass();
+        luabridge::getGlobalNamespace(L)
+                .deriveClass<ProductionChange, ITurnAction>("ProductionChange")
+                    .addFunction("get_delta", &ProductionChange::get_delta)
+                .endClass();
+        luabridge::getGlobalNamespace(L)
+                .deriveClass<ProvokeStrike, ITurnAction>("ProvokeStrike")
+                .endClass();
+        getGlobalNamespace(L).addFunction("print", print);
+        getGlobalNamespace(L).addFunction("printLn", printLn);
+
         std::string filePath = team->filePath;
-        if(luaL_dofile(L, filePath.c_str()) != 0) {
-            fprintf(stderr, "Error executing Lua script: %s\n", lua_tostring(L, -1));
+        int luaStatus = luaL_dofile(L, filePath.c_str());
+
+        report_errors(L, luaStatus);
+
+        LuaTurnData tD;
+        tD.L = L;
+        tD.teamId = team->ID();
+        tD.teams = teams;
+
+        LuaActions am;
+        am.L = L;
+        for (int i = 0; i < team->turn_actions.size(); ++i) {
+            am.my_actions[i] = team->turn_actions.at(i);
         }
 
+        setGlobal(L, tD, "turnData");
+        setGlobal(L, am, "actionMap");
         LuaRef selectAction = getGlobal(L, "getTurnAction");
-        LuaRef selectedActionTable = selectAction(turnData.generate_lua_ref(L));
+        LuaRef selectedActionTable = selectAction();
 
         int selectedActionIndex = 0;
         if (selectedActionTable.isTable()) {
             if(!selectedActionTable["index"].isNumber()) {
                 std::cerr << "Lua turn action return error: Wrong action index type!";
             }
-            selectedActionIndex = selectedActionTable["index"].cast<int>() - 1;
+            selectedActionIndex = selectedActionTable["index"].cast<int>();
 
             std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
 
