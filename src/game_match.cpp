@@ -71,6 +71,17 @@ void GameMatch::setup_teams() {
     }
 }
 
+void report_errors(lua_State *luaState, int status) {
+    if (status == 0) {
+        return;
+    }
+
+    std::cerr << "[LUA ERROR] " << lua_tostring(luaState, -1) << std::endl;
+
+    // remove error message from Lua state
+    lua_pop(luaState, 1);
+}
+
 void GameMatch::complete_turn() {
     CommonData cd{
             turnIndex,
