@@ -7,6 +7,14 @@
 #include "turn_action.h"
 #include "turn_data.h"
 
+void print(const std::string& s) {
+    std::cout << s;
+}
+
+void printLn(const std::string& s) {
+    std::cout << s << std::endl;
+}
+
 struct LuaActions {
     lua_State* L;
     std::map<int, std::shared_ptr<ITurnAction>> my_actions;
@@ -117,5 +125,41 @@ struct LuaTurnData {
         return v;
     }
 };
+
+void luaApiRegistration(lua_State* L) {
+    luaL_openlibs(L);
+    luabridge::getGlobalNamespace(L)
+            .beginClass<LuaActions>("LuaActions")
+            .addFunction("get",                 &LuaActions::get)
+            .addFunction("get_all",             &LuaActions::get_all)
+            .addFunction("get_prod_change",     &LuaActions::get_prod_change)
+            .addFunction("get_strike",          &LuaActions::get_strike)
+            .addFunction("get_incr",            &LuaActions::get_incr)
+            .addFunction("get_decr",            &LuaActions::get_decr)
+            .endClass();
+    luabridge::getGlobalNamespace(L)
+            .beginClass<LuaTurnData>("LuaTurnData")
+            .addProperty("id",              &LuaTurnData::teamId)
+            .addProperty("turn",            &LuaTurnData::turn)
+            .addProperty("turnsCount",      &LuaTurnData::turnsCount)
+            .addFunction("get_opponents",   &LuaTurnData::get_opponents)
+            .endClass();
+    luabridge::getGlobalNamespace(L)
+            .beginClass<Team>("Team")
+            .endClass();
+    luabridge::getGlobalNamespace(L)
+            .beginClass<ITurnAction>("ITurnAction")
+            .addFunction("type", &ITurnAction::getType)
+            .endClass();
+    luabridge::getGlobalNamespace(L)
+            .deriveClass<ProductionChange, ITurnAction>("ProductionChange")
+            .addFunction("get_delta", &ProductionChange::get_delta)
+            .endClass();
+    luabridge::getGlobalNamespace(L)
+            .deriveClass<ProvokeStrike, ITurnAction>("ProvokeStrike")
+            .endClass();
+    getGlobalNamespace(L).addFunction("print", print);
+    getGlobalNamespace(L).addFunction("printLn", printLn);
+}
 
 #endif //GAME_THEORY_LUA_SERIALIZE_H
