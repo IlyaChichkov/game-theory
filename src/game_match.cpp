@@ -114,6 +114,8 @@ void GameMatch::complete_turn() {
         luabridge::getGlobalNamespace(L)
                 .beginClass<LuaTurnData>("LuaTurnData")
                     .addProperty("id",              &LuaTurnData::teamId)
+                    .addProperty("turn",            &LuaTurnData::turn)
+                    .addProperty("turnsCount",      &LuaTurnData::turnsCount)
                     .addFunction("get_opponents",   &LuaTurnData::get_opponents)
                 .endClass();
         luabridge::getGlobalNamespace(L)
@@ -142,6 +144,8 @@ void GameMatch::complete_turn() {
         tD.L = L;
         tD.teamId = team->ID();
         tD.teams = teams;
+        tD.turn = turnIndex;
+        tD.turnsCount = turnsCount;
 
         LuaActions am;
         am.L = L;
