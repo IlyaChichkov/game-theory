@@ -40,6 +40,7 @@ private:
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;
 
+    std::string teamsFolder = "/teams";
     /*
      *  TODO: Добавить данные о общем производстве, текущей
      *        цене товара, таблицы зависимости издержек
