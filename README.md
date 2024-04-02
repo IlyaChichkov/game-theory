@@ -54,6 +54,7 @@ cp -r ../example/teams ./
 - [x] Run default match
 - [ ] API for custom strategies (in progress)
 - [ ] Run multiple matches
+- [ ] Detailed match configuration
 
 ## Examples & API
 
