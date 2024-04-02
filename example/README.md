@@ -17,7 +17,7 @@ The **getTurnAction** function should return table, that values depend on
 the type of returning action.
 
 ```lua
-return { index = Selected_Action["id"], target = index = Selected_Opponent["id"] }
+return { index = Selected_Action["id"], target = Selected_Opponent["id"] }
 ```
 
 ```lua
