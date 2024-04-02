@@ -44,11 +44,11 @@ cp -r ../example/teams ./
 
 ## API
 
-**actionMap**
+**actions**
 
 ```lua
 -- Get increase production cards
-actionMap:get_incr()
+actions:increase()
 --> returns table:
 {
     [0] = {
@@ -59,7 +59,7 @@ actionMap:get_incr()
 }
 
 -- Get decrease production cards
-actionMap:get_decr() 
+actions:decrease() 
 --> returns table:
 {
     [0] = {
@@ -70,7 +70,7 @@ actionMap:get_decr()
 }
 
 -- Get strike cards
-actionMap:get_strike()
+actions:strike()
 --> returns table:
 {
     [0] = {
@@ -80,18 +80,51 @@ actionMap:get_strike()
 }
 
 -- Get all cards
-actionMap:get_all()
+actions:all()
 --> returns table:
 {
     [0] = {
     "id" = action_id
     "type" = card_type -- [0]: None; [1]: Change production; [2]: Provoke strike
+    "delta" = production_delta ([warning!] only if type == 1)
     },
     [1] = ...
 }
 
-actionMap:get_prod_change(int value)
+actions:change_production(int value)
+--> returns table:
+{
+    "id" = action_id
+    "delta" = production_delta
+}
+-- [NOTE] return empty table if action wasn't found
 
+```
+
+**data** 
+
+```lua
+
+data.id (integer)
+--> current team id
+
+data.turn (integer)
+--> current turn
+
+data.turnsCount (integer)
+--> total amound of turns during the match
+
+-- Get match opponents
+data:opponents()
+--> returns table:
+{
+    [0] = {
+    "id" = opponent_id
+    "production" = opponent_production
+    "funds" = opponent_funds
+    },
+    [1] = ...
+}
 ```
 
 ## Examples
