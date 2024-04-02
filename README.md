@@ -14,6 +14,9 @@ select card from starting limited deck. By default, the game consists of 14 move
 the same number of cards, respectively. Teams vary their earnings according to the unit
 price tables and production expenses.
 
+This program allows to create custom scripts with lua language and run game matches,
+comparing effectiveness of different economy strategies.
+
 ## Default deck
 
 | **x2** `Increase production: +10` |   **x2** `Decrease production: -10`    |
