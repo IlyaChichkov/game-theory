@@ -131,8 +131,8 @@ void GameMatch::complete_turn() {
             am.my_actions[i] = team->turn_actions.at(i);
         }
 
-        setGlobal(L, tD, "turnData");
-        setGlobal(L, am, "actionMap");
+        setGlobal(L, tD, "data");
+        setGlobal(L, am, "actions");
 
         complete_action(L, team);
     }

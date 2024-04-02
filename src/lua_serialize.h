@@ -37,7 +37,7 @@ struct LuaActions {
         return v;
     }
 
-    LuaRef get_incr() {
+    LuaRef get_increase_production() {
         LuaRef v(L);
         v = newTable(L);
         int listCount = 0;
@@ -54,7 +54,7 @@ struct LuaActions {
         return v;
     }
 
-    LuaRef get_decr() {
+    LuaRef get_decrease_production() {
         LuaRef v(L);
         v = newTable(L);
         int listCount = 0;
@@ -71,13 +71,13 @@ struct LuaActions {
         return v;
     }
 
-    LuaRef get_prod_change(int val) {
+    LuaRef get_production_change_by(int delta) {
         LuaRef v(L);
         v = newTable(L);
         for (const auto &a : my_actions) {
             if(a.second->actionType != TurnActionType::ProductionChange) continue;
             std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a.second);
-            if(action->get_delta() == val) {
+            if(action->get_delta() == delta) {
                 v["id"] = a.first;
                 v["delta"] = action->get_delta();
                 break;
@@ -86,7 +86,7 @@ struct LuaActions {
         return v;
     }
 
-    LuaRef get_strike() {
+    LuaRef get_provoke_strike() {
         LuaRef v(L);
         v = newTable(L);
         for (const auto &a : my_actions) {
@@ -126,18 +126,18 @@ void luaApiRegistration(lua_State* L) {
     luaL_openlibs(L);
     luabridge::getGlobalNamespace(L)
             .beginClass<LuaActions>("LuaActions")
-            .addFunction("get_all",             &LuaActions::get_all)
-            .addFunction("get_prod_change",     &LuaActions::get_prod_change)
-            .addFunction("get_strike",          &LuaActions::get_strike)
-            .addFunction("get_incr",            &LuaActions::get_incr)
-            .addFunction("get_decr",            &LuaActions::get_decr)
+            .addFunction("all",                 &LuaActions::get_all)
+            .addFunction("change_production",   &LuaActions::get_production_change_by)
+            .addFunction("strike",              &LuaActions::get_provoke_strike)
+            .addFunction("increase",            &LuaActions::get_increase_production)
+            .addFunction("decrease",            &LuaActions::get_decrease_production)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<LuaTurnData>("LuaTurnData")
             .addProperty("id",              &LuaTurnData::teamId)
             .addProperty("turn",            &LuaTurnData::turn)
             .addProperty("turnsCount",      &LuaTurnData::turnsCount)
-            .addFunction("get_opponents",   &LuaTurnData::get_opponents)
+            .addFunction("opponents",       &LuaTurnData::get_opponents)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<Team>("Team")
