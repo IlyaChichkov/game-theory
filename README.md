@@ -16,21 +16,11 @@ price tables and production expenses.
 
 ## Default deck
 
-**x2** `Increase production: +10`
-
-**x2** `Increase production: +20`
-
-**x2** `Increase production: +30`
-
-**x1** `Increase production: +50`
-
-**x1** `Production unchanged`
-
-**x2** `Decrease production: -10`
-
-**x2** `Decrease production: -20`
-
-**x2** `Provoke strike`
+| **x2** `Increase production: +10` |   **x2** `Decrease production: -10`    |
+|---|------------------------------------|
+|**x2** `Increase production: +20` |  **x1** `Production unchanged` |
+| **x2** `Increase production: +30` | **x2** `Decrease production: -20` |
+| **x1** `Increase production: +50` |  **x2** `Provoke strike` |
 
 ## Build & Run
 
