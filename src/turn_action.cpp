@@ -46,3 +46,7 @@ void ProvokeStrike::complete(TurnData *turnData) const {
 void ProvokeStrike::set_target(std::shared_ptr<Team> target) {
     strikeTarget = target;
 }
+
+int ITurnAction::getType() {
+    return (int)actionType;
+}

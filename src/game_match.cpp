@@ -1,13 +1,34 @@
 #include "game_match.h"
 #include "team.h"
 #include "turn_action.h"
+#include "lua_serialize.h"
 
-void print(const std::string& s) {
-    std::cout << s;
+double income_func(double x, double u, double h) {
+    const double constant_term = 100000 / (h * std::sqrt(2 * 3.1415));
+    double exponent = std::pow(x - u, 2) / (2 * std::pow(h, 2.5));
+    return constant_term * std::exp(exponent);
 }
 
-void printLn(const std::string& s) {
-    std::cout << s << std::endl;
+double square_func(double x, double a, double b, double c) {
+    double inner_term = std::pow(x - 700 - b, 2) / std::pow(c, 2);
+    double exponent = std::exp(inner_term);
+    return 200 + a * exponent;
+}
+
+double expenses_func(double x, double u, double h) {
+    return square_func(x, 6, 0, 171)*0.5+0.1*-income_func(x, 700, 100);
+}
+
+int GameMatch::get_expenses(int production) {
+    return (int)(expenses_func(production, 700, 100));
+}
+
+int GameMatch::get_product_cost(int total_production) {
+    return (int)(income_func(total_production, 700, 100));
+}
+
+int GameMatch::get_income(int production) {
+    return (int)(production * sell_price);
 }
 
 std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
@@ -41,6 +62,7 @@ void GameMatch::setup_teams() {
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
 
+    // Load teams options from teams folder
     int team_id = 0;
     for(int i = 0; i < teams_files.size(); ++i) {
         std::string filePath = teams_folder_path + "\\" + teams_files[i];
@@ -56,6 +78,7 @@ void GameMatch::setup_teams() {
         }
     }
 
+    // Prepare teams objects
     for (int i = 0; i < teams.size(); ++i) {
         auto team = teams.at(i);
         int team_id = team->ID();
@@ -71,66 +94,51 @@ void GameMatch::setup_teams() {
     }
 }
 
-void GameMatch::complete_turn() {
+void report_errors(lua_State *luaState, int status) {
+    if (status == 0) {
+        return;
+    }
 
+    std::cerr << "[LUA ERROR] " << lua_tostring(luaState, -1) << std::endl;
+
+    // Remove error message from Lua state
+    lua_pop(luaState, 1);
+}
+
+void GameMatch::complete_turn() {
     for(const auto& team : this->teams) {
         team->before_turn();
     }
 
-    lua_State* L = luaL_newstate();
-    luaL_openlibs(L);
-    getGlobalNamespace(L).addFunction("print", print);
-    getGlobalNamespace(L).addFunction("printLn", printLn);
-
-    // Выполнение хода каждой команды
+    // Loop through teams and perform selected action
     for(const auto& team : this->teams) {
-        TurnData turnData(team);
-        turnData.teams = teams;
+        lua_State* L = luaL_newstate();
+        luaApiRegistration(L);
 
         std::string filePath = team->filePath;
-        if(luaL_dofile(L, filePath.c_str()) != 0) {
-            fprintf(stderr, "Error executing Lua script: %s\n", lua_tostring(L, -1));
+        int luaStatus = luaL_dofile(L, filePath.c_str());
+
+        report_errors(L, luaStatus);
+
+        LuaTurnData tD;
+        tD.L = L;
+        tD.teamId = team->ID();
+        tD.teams = teams;
+        tD.turn = turnIndex;
+        tD.turnsCount = turnsCount;
+        tD.get_expenses_at = get_expenses;
+        tD.get_cost_at = get_product_cost;
+
+        LuaActions am;
+        am.L = L;
+        for (int i = 0; i < team->turn_actions.size(); ++i) {
+            am.my_actions[i] = team->turn_actions.at(i);
         }
 
-        LuaRef selectAction = getGlobal(L, "getTurnAction");
-        LuaRef selectedActionTable = selectAction(turnData.generate_lua_ref(L));
+        setGlobal(L, tD, "data");
+        setGlobal(L, am, "actions");
 
-        int selectedActionIndex = 0;
-        if (selectedActionTable.isTable()) {
-            if(!selectedActionTable["index"].isNumber()) {
-                std::cerr << "Lua turn action return error: Wrong action index type!";
-            }
-            selectedActionIndex = selectedActionTable["index"].cast<int>() - 1;
-
-            std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
-
-            switch (selectedAction->actionType) {
-                case TurnActionType::None:
-                    break;
-                case TurnActionType::ProductionChange:
-                    break;
-                case TurnActionType::Strike:
-                    std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(selectedAction);
-                    if(!selectedActionTable["target"].isNumber()) {
-                        std::cerr << "Lua turn action return error: Wrong strike target type!";
-                    }
-                    int targetIndex = selectedActionTable["target"].cast<int>();
-                    auto targetTeam = get_team_by_id(targetIndex);
-                    if(targetTeam == nullptr) {
-                        std::cerr << "Null pointer for strike target team";
-                        break;
-                    }
-                    strike->set_target(targetTeam);
-                    break;
-            }
-
-            selectedAction->complete(&turnData);
-
-            auto& actions = team->turn_actions;
-            actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
-        } else {
-            std::cerr << "Lua turn action return error: Wrong return type, supposed to be table!";
-        }
+        complete_action(L, team);
     }
 
     for(const auto& team : this->teams) {
@@ -140,8 +148,70 @@ void GameMatch::complete_turn() {
     compute_turn_results();
 
     for(const auto& team : this->teams) {
-        team->pay_production_cost();
-        team->add_funds(get_income(team->get_production()));
+        int p = team->get_production();
+        team->add_funds(get_income(p) - get_expenses(p));
+    }
+}
+
+void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
+    TurnData turnData(team);
+    turnData.teams = teams;
+
+    LuaRef selectAction = getGlobal(L, "getTurnAction");
+    LuaRef selectedActionTable = nullptr;
+
+    enableExceptions(L);
+    try {
+        selectedActionTable = selectAction();
+    }
+    catch (const luabridge::LuaException &e) {
+        std::cerr << e.what() << std::endl;
+        teamFileHasErrors = true;
+        return;
+    }
+
+    int selectedActionIndex = 0;
+    if (selectedActionTable.isTable()) {
+        if(!selectedActionTable["index"].isNumber()) {
+            std::cerr << "Error: Wrong action index type! (supposed to be number)" << std::endl;
+            teamFileHasErrors = true;
+            return;
+        }
+        selectedActionIndex = selectedActionTable["index"].cast<int>();
+
+        std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
+
+        switch (selectedAction->actionType) {
+            case TurnActionType::None:
+                break;
+            case TurnActionType::ProductionChange:
+                break;
+            case TurnActionType::Strike:
+                std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(selectedAction);
+                if(!selectedActionTable["target"].isNumber()) {
+                    std::cerr << "Lua turn action return error: Wrong strike target type! (supposed to be number)" << std::endl;
+                    teamFileHasErrors = true;
+                    return;
+                }
+                int targetIndex = selectedActionTable["target"].cast<int>();
+                auto targetTeam = get_team_by_id(targetIndex);
+                if(targetTeam == nullptr) {
+                    std::cerr << "Error: Null pointer for strike target team!" << std::endl;
+                    teamFileHasErrors = true;
+                    return;
+                }
+                strike->set_target(targetTeam);
+                break;
+        }
+
+        selectedAction->complete(&turnData);
+
+        auto& actions = team->turn_actions;
+        actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
+    } else {
+        std::cerr << "Error: Wrong return type from lua 'getTurnAction' function, supposed to be table!" << std::endl;
+        teamFileHasErrors = true;
+        return;
     }
 }
 
@@ -151,16 +221,12 @@ void GameMatch::compute_turn_results() {
     for(const auto& team : this->teams) {
         total_production += team->get_production();
     }
-    int max_production = 1000;
-    sell_price = (int)(70 * max_production / total_production);
-}
-
-int GameMatch::get_income(int production) {
-    return (int)(production * sell_price);
+    sell_price = get_product_cost(total_production);
 }
 
 void GameMatch::start() {
-    teams_folder_path = std::filesystem::current_path().string() + "/teams";
+    // Check teams folder & load teams
+    teams_folder_path = std::filesystem::current_path().string() + teamsFolder;
     if(std::filesystem::exists(teams_folder_path)) {
         std::filesystem::directory_iterator it(teams_folder_path);
 
@@ -195,7 +261,14 @@ void GameMatch::start() {
     for (int i = 0; i < turnsCount; ++i) {
         std::cout << "[TURN " << i << "]" << std::endl;
         complete_turn();
+        if(teamFileHasErrors) {
+            std::cout << "|-------------- ERROR! --------------|"   << std::endl;
+            std::cout << "| ONE OF THE LUA SCRIPTS HAS ERRORS"  << std::endl;
+            std::cout << "|------------------------------------|"   << std::endl;
+            return;
+        }
         print_turn_results();
+        turnIndex++;
     }
     print_match_results();
 }
@@ -215,7 +288,11 @@ void GameMatch::print_turn_results() {
     if(loggingLevel < 1) return;
     std::cout << "|----------- TURN RESULTS -----------|" << std::endl;
     for(const auto& team : this->teams) {
-        std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
+        if(team->funds_delta_per_turn >= 0) {
+            std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (+" << team->funds_delta_per_turn << ")" << std::endl;
+        } else {
+            std::cout << "| [" << team->ID() << "] " << team->name << "; Prod: " << team->get_production() << " Funds: " << team->get_funds() << " (" << team->funds_delta_per_turn << ")" << std::endl;
+        }
     }
     std::cout << "|------------------------------------|" << std::endl;
 }

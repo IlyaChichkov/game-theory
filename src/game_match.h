@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <cmath>
 #include <algorithm>
 #include "turn_action.h"
 #include "lua.hpp"
@@ -35,10 +36,13 @@ class GameMatch {
      */
 private:
     std::shared_ptr<MatchActionsFactory> matchActionsFactory;
+    int turnIndex = 1;
     int turnsCount = 14;
     std::vector<std::shared_ptr<Team>> teams;
     std::vector<std::shared_ptr<Team>> strikeTeams;
 
+    std::string teamsFolder = "/teams";
+    bool teamFileHasErrors = false;
     /*
      *  TODO: Добавить данные о общем производстве, текущей
      *        цене товара, таблицы зависимости издержек
@@ -57,11 +61,17 @@ private:
     std::shared_ptr<Team> get_team_by_id(int id);
     void setup_teams();
     void complete_turn();
+
+    static int get_expenses(int production);
+    static int get_product_cost(int production);
     int get_income(int production);
+
     void print_match_configuration();
     void print_turn_results();
     void print_match_results();
+
     void compute_turn_results();
+    void complete_action(lua_State* L, std::shared_ptr<Team> team);
 
 public:
     GameMatch(std::shared_ptr<MatchActionsFactory> _matchActions);
