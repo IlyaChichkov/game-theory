@@ -19,13 +19,6 @@ struct LuaActions {
     lua_State* L;
     std::map<int, std::shared_ptr<ITurnAction>> my_actions;
 
-    LuaRef get(int i) {
-        LuaRef v(L);
-        v = newTable(L);
-        v["id"] = i;
-        return v;
-    }
-
     LuaRef get_all() {
         LuaRef v(L);
         v = newTable(L);
@@ -53,7 +46,6 @@ struct LuaActions {
                 listCount++;
             }
         }
-        // v["size"] = listCount;
         return v;
     }
 
@@ -71,7 +63,6 @@ struct LuaActions {
                 listCount++;
             }
         }
-        // v["size"] = listCount;
         return v;
     }
 
@@ -130,7 +121,6 @@ void luaApiRegistration(lua_State* L) {
     luaL_openlibs(L);
     luabridge::getGlobalNamespace(L)
             .beginClass<LuaActions>("LuaActions")
-            .addFunction("get",                 &LuaActions::get)
             .addFunction("get_all",             &LuaActions::get_all)
             .addFunction("get_prod_change",     &LuaActions::get_prod_change)
             .addFunction("get_strike",          &LuaActions::get_strike)
