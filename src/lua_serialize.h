@@ -27,6 +27,11 @@ struct LuaActions {
             v[listCount + 1] = newTable(L);
             v[listCount + 1]["id"] = a.first;
             v[listCount + 1]["type"] = (int)a.second->actionType;
+            if(a.second->actionType == TurnActionType::ProductionChange){
+                std::shared_ptr<ProductionChange> action = std::dynamic_pointer_cast<ProductionChange>(a.second);
+                v[listCount + 1]["delta"] = action->get_delta();
+            }
+
             listCount++;
         }
         return v;
