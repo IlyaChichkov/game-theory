@@ -4,24 +4,14 @@
 #include "lua_serialize.h"
 
 double income_func(double x, double u, double h) {
-    // Constant term
     const double constant_term = 100000 / (h * std::sqrt(2 * 3.1415));
-
-    // Exponential term
     double exponent = std::pow(x - u, 2) / (2 * std::pow(h, 2.5));
-
-    // Combine terms and return the result
     return constant_term * std::exp(exponent);
 }
 
 double square_func(double x, double a, double b, double c) {
-    // Inner term for the exponent
     double inner_term = std::pow(x - 700 - b, 2) / std::pow(c, 2);
-
-    // Combine terms inside the exponential
     double exponent = std::exp(inner_term);
-
-    // Return the final expression
     return 200 + a * exponent;
 }
 
