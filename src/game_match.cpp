@@ -154,46 +154,11 @@ void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
     turnData.teams = teams;
 
     LuaRef selectAction = getGlobal(L, "getTurnAction");
+    LuaRef selectedActionTable = nullptr;
 
     enableExceptions(L);
     try {
-        LuaRef selectedActionTable = selectAction();
-        int selectedActionIndex = 0;
-        if (selectedActionTable.isTable()) {
-            if(!selectedActionTable["index"].isNumber()) {
-                std::cerr << "Error: Wrong action index type! (supposed to be number)" << std::endl;
-            }
-            selectedActionIndex = selectedActionTable["index"].cast<int>();
-
-            std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
-
-            switch (selectedAction->actionType) {
-                case TurnActionType::None:
-                    break;
-                case TurnActionType::ProductionChange:
-                    break;
-                case TurnActionType::Strike:
-                    std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(selectedAction);
-                    if(!selectedActionTable["target"].isNumber()) {
-                        std::cerr << "Lua turn action return error: Wrong strike target type! (supposed to be number)" << std::endl;
-                    }
-                    int targetIndex = selectedActionTable["target"].cast<int>();
-                    auto targetTeam = get_team_by_id(targetIndex);
-                    if(targetTeam == nullptr) {
-                        std::cerr << "Error: Null pointer for strike target team!" << std::endl;
-                        break;
-                    }
-                    strike->set_target(targetTeam);
-                    break;
-            }
-
-            selectedAction->complete(&turnData);
-
-            auto& actions = team->turn_actions;
-            actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
-        } else {
-            std::cerr << "Error: Wrong return type from lua 'getTurnAction' function, supposed to be table!" << std::endl;
-        }
+        selectedActionTable = selectAction();
     }
     catch (const luabridge::LuaException &e) {
         std::cerr << e.what() << std::endl;
@@ -201,6 +166,49 @@ void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
         return;
     }
 
+    int selectedActionIndex = 0;
+    if (selectedActionTable.isTable()) {
+        if(!selectedActionTable["index"].isNumber()) {
+            std::cerr << "Error: Wrong action index type! (supposed to be number)" << std::endl;
+            teamFileHasErrors = true;
+            return;
+        }
+        selectedActionIndex = selectedActionTable["index"].cast<int>();
+
+        std::shared_ptr<ITurnAction> selectedAction = team->turn_actions.at(selectedActionIndex);
+
+        switch (selectedAction->actionType) {
+            case TurnActionType::None:
+                break;
+            case TurnActionType::ProductionChange:
+                break;
+            case TurnActionType::Strike:
+                std::shared_ptr<ProvokeStrike> strike = std::dynamic_pointer_cast<ProvokeStrike>(selectedAction);
+                if(!selectedActionTable["target"].isNumber()) {
+                    std::cerr << "Lua turn action return error: Wrong strike target type! (supposed to be number)" << std::endl;
+                    teamFileHasErrors = true;
+                    return;
+                }
+                int targetIndex = selectedActionTable["target"].cast<int>();
+                auto targetTeam = get_team_by_id(targetIndex);
+                if(targetTeam == nullptr) {
+                    std::cerr << "Error: Null pointer for strike target team!" << std::endl;
+                    teamFileHasErrors = true;
+                    return;
+                }
+                strike->set_target(targetTeam);
+                break;
+        }
+
+        selectedAction->complete(&turnData);
+
+        auto& actions = team->turn_actions;
+        actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());
+    } else {
+        std::cerr << "Error: Wrong return type from lua 'getTurnAction' function, supposed to be table!" << std::endl;
+        teamFileHasErrors = true;
+        return;
+    }
 }
 
 void GameMatch::compute_turn_results() {
