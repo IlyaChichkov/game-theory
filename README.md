@@ -48,6 +48,12 @@ cp -r ../example/teams ./
 ./game_theory
 ```
 
+## Current progress
+
+- [x] Run default match
+- [ ] API for custom strategies (in progress)
+- [ ] Run multiple matches
+
 ## Examples & API
 
 [Making custom team](./example/)
