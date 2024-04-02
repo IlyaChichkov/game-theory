@@ -5,6 +5,7 @@
 - [Description](#description)
     - [Default deck](#default-deck)
 - [Build & Run](#build--run)
+- [Current progress](#current-progress)
 - [Examples & API](#examples--api)
 
 ## Description
@@ -17,7 +18,7 @@ price tables and production expenses.
 This program allows to create custom scripts with lua language and run game matches,
 comparing effectiveness of different economy strategies.
 
-## Default deck
+### Default deck
 
 | **x2** `Increase production: +10` |   **x2** `Decrease production: -10`    |
 |---|------------------------------------|
