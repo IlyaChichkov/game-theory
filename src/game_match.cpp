@@ -19,6 +19,18 @@ double expenses_func(double x, double u, double h) {
     return square_func(x, 6, 0, 171)*0.5+0.1*-income_func(x, 700, 100);
 }
 
+int GameMatch::get_expenses(int production) {
+    return (int)(expenses_func(production, 700, 100));
+}
+
+int GameMatch::get_product_cost(int total_production) {
+    return (int)(income_func(total_production, 700, 100));
+}
+
+int GameMatch::get_income(int production) {
+    return (int)(production * sell_price);
+}
+
 std::vector<std::shared_ptr<ITurnAction>> DefaultMatchActions::create() const  {
     std::vector<std::shared_ptr<ITurnAction>> actions;
     actions.push_back(std::make_shared<ProductionChange>(-10));
@@ -114,6 +126,8 @@ void GameMatch::complete_turn() {
         tD.teams = teams;
         tD.turn = turnIndex;
         tD.turnsCount = turnsCount;
+        tD.get_expenses_at = get_expenses;
+        tD.get_cost_at = get_product_cost;
 
         LuaActions am;
         am.L = L;
@@ -207,15 +221,7 @@ void GameMatch::compute_turn_results() {
     for(const auto& team : this->teams) {
         total_production += team->get_production();
     }
-    sell_price = (int)(income_func(total_production, 700, 100));
-}
-
-int GameMatch::get_expenses(int production) {
-    return (int)(expenses_func(production, 700, 100));
-}
-
-int GameMatch::get_income(int production) {
-    return (int)(production * sell_price);
+    sell_price = get_product_cost(total_production);
 }
 
 void GameMatch::start() {

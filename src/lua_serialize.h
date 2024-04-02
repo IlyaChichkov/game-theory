@@ -105,6 +105,8 @@ struct LuaTurnData {
     lua_State* L;
     LuaActions actions;
     std::vector<std::shared_ptr<Team>> teams;
+    int (*get_expenses_at)(int production);
+    int (*get_cost_at)(int production);
 
     LuaRef get_opponents() {
         LuaRef v(L);
@@ -119,6 +121,14 @@ struct LuaTurnData {
             listCount++;
         }
         return v;
+    }
+
+    int get_expenses(int production) {
+        return get_expenses_at(production);
+    }
+
+    int get_cost(int production) {
+        return get_cost_at(production);
     }
 };
 
@@ -138,6 +148,8 @@ void luaApiRegistration(lua_State* L) {
             .addProperty("turn",            &LuaTurnData::turn)
             .addProperty("turnsCount",      &LuaTurnData::turnsCount)
             .addFunction("opponents",       &LuaTurnData::get_opponents)
+            .addFunction("expenses_at",     &LuaTurnData::get_expenses)
+            .addFunction("cost_at",         &LuaTurnData::get_cost)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<Team>("Team")

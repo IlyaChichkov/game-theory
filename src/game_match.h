@@ -62,7 +62,8 @@ private:
     void setup_teams();
     void complete_turn();
 
-    int get_expenses(int production);
+    static int get_expenses(int production);
+    static int get_product_cost(int production);
     int get_income(int production);
 
     void print_match_configuration();
