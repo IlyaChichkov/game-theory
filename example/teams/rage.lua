@@ -10,17 +10,17 @@ turnActionType = {
 }
 
 getTurnAction = function()
-    if turnData.turn == 2 or turnData.turn == turnData.turnsCount / 2 then
+    if data.turn == 2 or data.turn == data.turnsCount / 2 then
         -- 1) Provoke strikes
-        local strike = actionMap:get_strike()
-        if strike["index"] ~= nil then
-            local opponents = turnData:get_opponents()
+        local strike = actions:strike()
+        if strike["id"] ~= nil then
+            local opponents = data:opponents()
             table.sort(opponents, function(a, b) return a["production"] > b["production"] end)
-            return { index = strike["index"], target = opponents[1]["id"] }
+            return { index = strike["id"], target = opponents[1]["id"] }
         end
     end
     -- 2) Max production increase
-    local list = actionMap:get_incr()
+    local list = actions:increase()
     if #list > 0 then
         table.sort(list, function(a, b) return a["delta"] > b["delta"] end)
         if #list < 2 then
@@ -30,7 +30,7 @@ getTurnAction = function()
         end
     end
     -- 3) Decrease production
-    local decreaseActions = actionMap:get_decr()
+    local decreaseActions = actions:decrease()
     if #decreaseActions > 0 then
         table.sort(decreaseActions, function(a, b) return a["delta"] > b["delta"] end)
         return {index = decreaseActions[1]["id"]}
