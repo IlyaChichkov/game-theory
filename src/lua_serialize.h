@@ -104,6 +104,7 @@ struct LuaTurnData {
     int turnsCount;
     lua_State* L;
     LuaActions actions;
+    std::vector<std::shared_ptr<TurnData>> turnsData;
     std::vector<std::shared_ptr<Team>> teams;
     int (*get_expenses_at)(int production);
     int (*get_cost_at)(int production);
