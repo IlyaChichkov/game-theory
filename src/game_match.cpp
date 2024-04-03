@@ -149,10 +149,14 @@ void GameMatch::complete_turn() {
 
     compute_turn_results();
 
+    std::map<int, int> teamsProfits;
     for(const auto& team : this->teams) {
         int p = team->get_production();
         team->add_funds(get_income(p) - get_expenses(p));
+
+        teamsProfits[team->ID()] = team->funds_delta_per_turn;
     }
+    turnData->container->teamsProfits = teamsProfits;
 }
 
 std::shared_ptr<TurnData> GameMatch::create_turn_data() {

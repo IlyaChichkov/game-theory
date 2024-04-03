@@ -16,6 +16,7 @@ struct TurnContainer {
     int totalProduction;
     std::map<int, int> teamsProduction;
     std::map<int, int> teamsFunds;
+    std::map<int, int> teamsProfits;
 };
 
 class TurnData {

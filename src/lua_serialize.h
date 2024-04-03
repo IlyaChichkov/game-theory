@@ -132,17 +132,42 @@ struct LuaTurnData {
         return get_cost_at(production);
     }
 
-    int production(int turnIndex, int teamId) {
+    int production(int turnIndex) {
         if(turnIndex > turn || turnIndex < 1) return -1;
         auto turnData = turnsData.at(turnIndex - 1);
         int r = turnData->container->teamsProduction[teamId];
         return r;
     }
 
-    int funds(int turnIndex, int teamId) {
+    int funds(int turnIndex) {
         if(turnIndex > turn || turnIndex < 1) return -1;
         auto turnData = turnsData.at(turnIndex - 1);
         return turnData->container->teamsFunds[teamId];
+    }
+
+    int profit(int turnIndex) {
+        if(turnIndex >= turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->teamsProfits[teamId];
+    }
+
+    int production_team_id(int turnIndex, int id) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        int r = turnData->container->teamsProduction[id];
+        return r;
+    }
+
+    int funds_team_id(int turnIndex, int id) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->teamsFunds[id];
+    }
+
+    int profit_team_id(int turnIndex, int id) {
+        if(turnIndex >= turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->teamsProfits[id];
     }
 
     int price(int turnIndex) {
@@ -178,6 +203,10 @@ void luaApiRegistration(lua_State* L) {
             .addFunction("cost_at",         &LuaTurnData::get_cost)
             .addFunction("production",      &LuaTurnData::production)
             .addFunction("funds",           &LuaTurnData::funds)
+            .addFunction("profit",          &LuaTurnData::profit)
+            .addFunction("production_of",   &LuaTurnData::production_team_id)
+            .addFunction("funds_of",        &LuaTurnData::funds_team_id)
+            .addFunction("profit_of",       &LuaTurnData::profit_team_id)
             .addFunction("price",           &LuaTurnData::price)
             .addFunction("totalProduction", &LuaTurnData::totalProduction)
             .endClass();
