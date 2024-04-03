@@ -11,11 +11,11 @@ using namespace luabridge;
 
 class Team;
 
-struct CommonData {
-    int turnIndex;
-    int turnsCount;
-    int sellPrice;
-    int totalProducts;
+struct TurnContainer {
+    int price;
+    int totalProduction;
+    std::map<int, int> teamsProduction;
+    std::map<int, int> teamsFunds;
 };
 
 class TurnData {
