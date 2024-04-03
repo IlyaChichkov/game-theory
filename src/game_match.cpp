@@ -155,9 +155,30 @@ void GameMatch::complete_turn() {
     }
 }
 
-void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
-    TurnData turnData(team);
-    turnData.teams = teams;
+std::shared_ptr<TurnData> GameMatch::create_turn_data() {
+    std::map<int, int> teamsProduction;
+    std::map<int, int> teamsFunds;
+
+    for(const auto &team : teams) {
+        teamsProduction[team->ID()] = team->get_production();
+        teamsFunds[team->ID()] = team->get_funds();
+    }
+
+    TurnContainer container {
+            sell_price,
+            total_production,
+            teamsProduction,
+            teamsFunds
+    };
+
+    auto turnData = std::make_shared<TurnData>(turnIndex, std::make_shared<TurnContainer>(container));
+    turnData->teams = teams;
+
+    turnsData.push_back(turnData);
+    return turnData;
+}
+
+void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team, std::shared_ptr<TurnData> turnData) {
 
     LuaRef selectAction = getGlobal(L, "getTurnAction");
     LuaRef selectedActionTable = nullptr;
