@@ -184,18 +184,27 @@ struct LuaTurnData {
         return turnData->container->totalProduction;
     }
 
-    int most_profit_team_id(int turnIndex) {
-        if(turnIndex >= turn || turnIndex < 1) return -1;
+    LuaRef most_profit_teams(int turnIndex) {
+        LuaRef v(L);
+        v = newTable(L);
+        if(turnIndex >= turn || turnIndex < 1) return v;
         auto turnData = turnsData.at(turnIndex - 1);
         int maxProfit = INT_MIN;
-        int id = -1;
         for(const auto &team : turnData->container->teamsProfits) {
             if(team.second > maxProfit) {
                 maxProfit = team.second;
-                id = team.first;
             }
         }
-        return id;
+        int i = 1;
+        for(const auto &team : turnData->container->teamsProfits) {
+            if(team.second == maxProfit) {
+                v[i] = newTable(L);
+                v[i]["id"] = team.first;
+                v[i]["value"] = team.second;
+                i++;
+            }
+        }
+        return v;
     }
 };
 
@@ -225,7 +234,7 @@ void luaApiRegistration(lua_State* L) {
             .addFunction("profit_of",       &LuaTurnData::profit_team_id)
             .addFunction("price",           &LuaTurnData::price)
             .addFunction("totalProduction", &LuaTurnData::totalProduction)
-            .addFunction("most_profit_id",  &LuaTurnData::most_profit_team_id)
+            .addFunction("most_profit",     &LuaTurnData::most_profit_teams)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<Team>("Team")
