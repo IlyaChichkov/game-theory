@@ -110,6 +110,7 @@ void GameMatch::complete_turn() {
         team->before_turn();
     }
 
+    auto turnData = create_turn_data();
     // Loop through teams and perform selected action
     for(const auto& team : this->teams) {
         lua_State* L = luaL_newstate();
@@ -124,6 +125,7 @@ void GameMatch::complete_turn() {
         tD.L = L;
         tD.teamId = team->ID();
         tD.teams = teams;
+        tD.turnsData = turnsData;
         tD.turn = turnIndex;
         tD.turnsCount = turnsCount;
         tD.get_expenses_at = get_expenses;
@@ -138,7 +140,7 @@ void GameMatch::complete_turn() {
         setGlobal(L, tD, "data");
         setGlobal(L, am, "actions");
 
-        complete_action(L, team);
+        complete_action(L, team, turnData);
     }
 
     for(const auto& team : this->teams) {
@@ -204,7 +206,7 @@ void GameMatch::complete_action(lua_State* L, std::shared_ptr<Team> team) {
                 break;
         }
 
-        selectedAction->complete(&turnData);
+        selectedAction->complete(turnData);
 
         auto& actions = team->turn_actions;
         actions.erase(std::remove(actions.begin(), actions.end(), selectedAction), actions.end());

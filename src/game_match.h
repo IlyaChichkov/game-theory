@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include "turn_action.h"
+#include "turn_data.h"
 #include "lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
@@ -51,6 +52,7 @@ private:
      */
     std::map<int, int> productsPriceTable;
     std::map<int, int> productionCostsTable;
+    std::vector<std::shared_ptr<TurnData>> turnsData;
 
     int total_production = 0;
     int sell_price = 0;
@@ -71,7 +73,8 @@ private:
     void print_match_results();
 
     void compute_turn_results();
-    void complete_action(lua_State* L, std::shared_ptr<Team> team);
+    std::shared_ptr<TurnData> create_turn_data();
+    void complete_action(lua_State* L, std::shared_ptr<Team> team, std::shared_ptr<TurnData> turnData);
 
 public:
     GameMatch(std::shared_ptr<MatchActionsFactory> _matchActions);
