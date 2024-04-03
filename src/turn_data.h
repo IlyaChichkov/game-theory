@@ -26,13 +26,11 @@ class TurnData {
 private:
     std::shared_ptr<Team> receiveTeam;
 public:
-    CommonData commonData;
-
-    TurnData(std::shared_ptr<Team> receiveTeam);
+    int turn = 0;
+    std::shared_ptr<TurnContainer> container;
+    TurnData(int, std::shared_ptr<TurnContainer>);
     std::vector<std::shared_ptr<Team>> teams;
-    std::vector<std::shared_ptr<Team>> get_opponents(int team_id);
-
-    LuaRef generate_lua_ref(lua_State* L);
+    LuaRef export_lua_table(lua_State* L);
 };
 
 
