@@ -14,7 +14,7 @@ int ProductionChange::get_delta()  {
     return delta;
 }
 
-void ProductionChange::complete(TurnData *turnData) const {
+void ProductionChange::complete(std::shared_ptr<TurnData> turnData) const {
     std::cout << "complete: Production Change | Delta = " << delta << std::endl;
     for (auto team_ptr : turnData->teams) {
         if(team_ptr->ID() == owner_id) {
@@ -29,7 +29,7 @@ ProvokeStrike::ProvokeStrike() {
     strikeTarget = nullptr;
 }
 
-void ProvokeStrike::complete(TurnData *turnData) const {
+void ProvokeStrike::complete(std::shared_ptr<TurnData> turnData) const {
     if(strikeTarget == nullptr) {
         return;
     }

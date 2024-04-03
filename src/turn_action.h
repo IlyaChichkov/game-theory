@@ -19,7 +19,7 @@ class ITurnAction {
 public:
     TurnActionType actionType = TurnActionType::None;
     int getType();
-    virtual void complete(TurnData *turnData) const = 0;
+    virtual void complete(std::shared_ptr<TurnData> turnData) const = 0;
     virtual ~ITurnAction() {}
 };
 
@@ -31,7 +31,7 @@ public:
     explicit ProductionChange(int _delta);
     void set_owner(int _owner_id);
     int get_delta();
-    void complete(TurnData *turnData) const override;
+    void complete(std::shared_ptr<TurnData> turnData) const override;
 };
 
 class ProvokeStrike : public ITurnAction {
@@ -39,7 +39,7 @@ private:
     std::shared_ptr<Team> strikeTarget = nullptr;
 public:
     explicit ProvokeStrike();
-    void complete(TurnData *turnData) const override;
+    void complete(std::shared_ptr<TurnData> turnData) const override;
     void set_target(std::shared_ptr<Team> target);
 };
 
