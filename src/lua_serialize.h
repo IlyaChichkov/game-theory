@@ -130,6 +130,31 @@ struct LuaTurnData {
     int get_cost(int production) {
         return get_cost_at(production);
     }
+
+    int production(int turnIndex, int teamId) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        int r = turnData->container->teamsProduction[teamId];
+        return r;
+    }
+
+    int funds(int turnIndex, int teamId) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->teamsFunds[teamId];
+    }
+
+    int price(int turnIndex) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->price;
+    }
+
+    int totalProduction(int turnIndex) {
+        if(turnIndex > turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        return turnData->container->totalProduction;
+    }
 };
 
 void luaApiRegistration(lua_State* L) {
@@ -150,6 +175,10 @@ void luaApiRegistration(lua_State* L) {
             .addFunction("opponents",       &LuaTurnData::get_opponents)
             .addFunction("expenses_at",     &LuaTurnData::get_expenses)
             .addFunction("cost_at",         &LuaTurnData::get_cost)
+            .addFunction("production",      &LuaTurnData::production)
+            .addFunction("funds",           &LuaTurnData::funds)
+            .addFunction("price",           &LuaTurnData::price)
+            .addFunction("totalProduction", &LuaTurnData::totalProduction)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<Team>("Team")
