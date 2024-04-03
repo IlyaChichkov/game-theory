@@ -40,12 +40,6 @@ int Team::get_funds() {
     return funds;
 }
 
-void Team::pay_production_cost() {
-    int cost = (int)(get_production() * 1.8);
-    funds_delta_per_turn -= cost;
-    funds -= cost;
-}
-
 void Team::add_funds(int val) {
     funds_delta_per_turn = val;
     funds += val;
