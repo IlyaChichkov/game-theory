@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <limits.h>
 #include "turn_action.h"
 #include "turn_data.h"
 
@@ -117,6 +118,7 @@ struct LuaTurnData {
             if(a->ID() == teamId) continue;
             v[listCount + 1] = newTable(L);
             v[listCount + 1]["id"] = a->ID();
+            v[listCount + 1]["name"] = a->name;
             v[listCount + 1]["production"] = a->get_production();
             v[listCount + 1]["funds"] = a->get_funds();
             listCount++;
@@ -181,6 +183,20 @@ struct LuaTurnData {
         auto turnData = turnsData.at(turnIndex - 1);
         return turnData->container->totalProduction;
     }
+
+    int most_profit_team_id(int turnIndex) {
+        if(turnIndex >= turn || turnIndex < 1) return -1;
+        auto turnData = turnsData.at(turnIndex - 1);
+        int maxProfit = INT_MIN;
+        int id = -1;
+        for(const auto &team : turnData->container->teamsProfits) {
+            if(team.second > maxProfit) {
+                maxProfit = team.second;
+                id = team.first;
+            }
+        }
+        return id;
+    }
 };
 
 void luaApiRegistration(lua_State* L) {
@@ -209,6 +225,7 @@ void luaApiRegistration(lua_State* L) {
             .addFunction("profit_of",       &LuaTurnData::profit_team_id)
             .addFunction("price",           &LuaTurnData::price)
             .addFunction("totalProduction", &LuaTurnData::totalProduction)
+            .addFunction("most_profit_id",  &LuaTurnData::most_profit_team_id)
             .endClass();
     luabridge::getGlobalNamespace(L)
             .beginClass<Team>("Team")
